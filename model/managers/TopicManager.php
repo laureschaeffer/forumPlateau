@@ -10,6 +10,7 @@ class TopicManager extends Manager{
     protected $className = "Model\Entities\Topic";
     protected $tableName = "topic";
 
+    //le parent ("App/Manager") a une fonction connect(), elle-même reliée au DAO pour se connecter
     public function __construct(){
         parent::connect();
     }

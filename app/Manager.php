@@ -13,8 +13,11 @@ abstract class Manager{
      * @param array $order an array with field and order option
      * @return Collection a collection of objects hydrated by DAO, which are results of the request sent
      */
+
+     //order un est tableau qui n'est pas obligé d'être précisé quand cette methode sera appelé, d'ou le null
     public function findAll($order = null){
 
+        //est-ce que order a été précisé? Si oui le premier élément est nom, titre, date, ... et le deuxieme DESC ou ASC
         $orderQuery = ($order) ?                 
             "ORDER BY ".$order[0]. " ".$order[1] :
             "";

@@ -10,68 +10,96 @@ use App\Entity;
 final class Topic extends Entity{
 
     private $id;
-    private $title;
+    private $titre;
+    private $dateCreation;
+    private $verouillage;
+    private $categorie;
     private $user;
-    private $category;
-    private $creationDate;
-    private $closed;
 
     public function __construct($data){         
         $this->hydrate($data);        
     }
 
-    /**
-     * Get the value of id
-     */ 
+
     public function getId(){
         return $this->id;
     }
 
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */ 
+
     public function setId($id){
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Get the value of title
-     */ 
-    public function getTitle(){
-        return $this->title;
+ 
+    public function gettitre(){
+        return $this->titre;
     }
 
-    /**
-     * Set the value of title
-     *
-     * @return  self
-     */ 
-    public function setTitle($title){
-        $this->title = $title;
+
+    public function settitre($titre){
+        $this->titre = $titre;
         return $this;
     }
 
-    /**
-     * Get the value of user
-     */ 
-    public function getUser(){
+
+    public function getDateCreation()
+    {
+        return $this->dateCreation;
+    }
+
+
+    public function setDateCreation($dateCreation)
+    {
+        $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+
+    public function getVerouillage()
+    {
+        return $this->verouillage;
+    }
+
+
+    public function setVerouillage($verouillage)
+    {
+        $this->verouillage = $verouillage;
+
+        return $this;
+    }
+
+
+    public function getCategorie()
+    {
+        return $this->categorie;
+    }
+
+
+    public function setCategorie($categorie)
+    {
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+
+    public function getUser()
+    {
         return $this->user;
     }
 
-    /**
-     * Set the value of user
-     *
-     * @return  self
-     */ 
-    public function setUser($user){
+  
+    public function setUser($user)
+    {
         $this->user = $user;
+
         return $this;
     }
 
     public function __toString(){
-        return $this->title;
+        return $this->titre;
     }
+
 }

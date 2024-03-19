@@ -10,48 +10,99 @@ use App\Entity;
 final class User extends Entity{
 
     private $id;
-    private $nickName;
+    private $mail;
+    private $pseudo;
+    private $motDePasse;
+    private $dateInscription;
+    private $role;
 
     public function __construct($data){         
         $this->hydrate($data);        
     }
 
-    /**
-     * Get the value of id
-     */ 
+
     public function getId(){
         return $this->id;
     }
 
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */ 
+
     public function setId($id){
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Get the value of nickName
-     */ 
-    public function getNickName(){
-        return $this->nickName;
+
+    public function getMail()
+    {
+        return $this->mail;
     }
 
-    /**
-     * Set the value of nickName
-     *
-     * @return  self
-     */ 
-    public function setNickName($nickName){
-        $this->nickName = $nickName;
+
+    public function setMail($mail)
+    {
+        $this->mail = $mail;
 
         return $this;
     }
 
+
+    public function getPseudo()
+    {
+        return $this->pseudo;
+    }
+
+
+    public function setPseudo($pseudo)
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+  
+    public function getMotDePasse()
+    {
+        return $this->motDePasse;
+    }
+
+
+    public function setMotDePasse($motDePasse)
+    {
+        $this->motDePasse = $motDePasse;
+
+        return $this;
+    }
+
+ 
+    public function getDateInscription()
+    {
+        return $this->dateInscription;
+    }
+
+
+    public function setDateInscription($dateInscription)
+    {
+        $this->dateInscription = $dateInscription;
+
+        return $this;
+    }
+
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    
     public function __toString() {
-        return $this->nickName;
+        return $this->pseudo;
     }
 }

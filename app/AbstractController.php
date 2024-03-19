@@ -14,13 +14,15 @@ abstract class AbstractController{
 
     public function index() {}
 
+    //permet de simplifier une redirection, qui se fera sous la forme:
+    //$this->redirectTo("forum", "listCategories") au lieu de index.php?ctrl=forum&action=listCategories
     public function redirectTo($ctrl = null, $action = null, $id = null){
 
-        if($ctrl != "home") {
+        // if($ctrl != "home") {
             $url = $ctrl ? "?ctrl=".$ctrl : "";
             $url.= $action ? "&action=".$action : "";
             $url.= $id ? "&id=".$id : "";
-        } else $url = "/";
+        // } else $url = "/";
 
         header("Location: $url");
         die();

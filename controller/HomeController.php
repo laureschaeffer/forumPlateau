@@ -1,9 +1,14 @@
 <?php
 namespace Controller;
 
+use App\Session;
 use App\AbstractController;
 use App\ControllerInterface;
 use Model\Managers\UserManager;
+use Model\Managers\PostManager;
+use Model\Managers\CategoryManager;
+use Model\Managers\TopicManager;
+
 
 class HomeController extends AbstractController implements ControllerInterface {
 

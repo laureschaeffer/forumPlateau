@@ -2,13 +2,17 @@
 namespace Controller;
 
 use App\Session;
+use App\DAO;
 use App\AbstractController;
 use App\ControllerInterface;
 use Model\Managers\CategoryManager;
 use Model\Managers\TopicManager;
+use Model\Managers\PostManager;
+
 
 class ForumController extends AbstractController implements ControllerInterface{
 
+    //donne la liste des categories
     public function index() {
         
         // créer une nouvelle instance de CategoryManager
@@ -26,6 +30,8 @@ class ForumController extends AbstractController implements ControllerInterface{
         ];
     }
 
+
+    //liste des sujets en fonction d'une catégorie
     public function listTopicsByCategory($id) {
 
         $topicManager = new TopicManager();
@@ -42,4 +48,24 @@ class ForumController extends AbstractController implements ControllerInterface{
             ]
         ];
     }
+
+
+    //liste des posts en fonction du sujet choisi (id)
+    public function listPostsByTopic($id){
+
+        $postManager = new PostManager();
+
+        $posts = $postManager->findPostsByTopic($id);
+
+        return [
+            "view" => VIEW_DIR."forum/listPosts.php",
+            "meta_description" => "Liste des postes du topic",
+            "data" => [
+                "posts" => $posts
+            ]
+        ];
+    }
+
+
+
 }
