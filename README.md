@@ -6,5 +6,5 @@
 - Méthode kanban sur trello
 
 ## Utilisation:
-- Framework créé par Elan Formation, modèle MVC
+- Framework créé par Elan Formation, modèle MVC en programmation orientée objet
 - PHP, HTML, CSS
