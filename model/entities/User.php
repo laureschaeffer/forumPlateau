@@ -10,7 +10,7 @@ use App\Entity;
 final class User extends Entity{
 
     private $id;
-    private $mail;
+    private $email;
     private $pseudo;
     private $motDePasse;
     private $dateInscription;
@@ -32,15 +32,15 @@ final class User extends Entity{
     }
 
 
-    public function getMail()
+    public function getEmail()
     {
-        return $this->mail;
+        return $this->email;
     }
 
 
-    public function setMail($mail)
+    public function setMail($email)
     {
-        $this->mail = $mail;
+        $this->email = $email;
 
         return $this;
     }

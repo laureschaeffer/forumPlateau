@@ -32,7 +32,7 @@ class ForumController extends AbstractController implements ControllerInterface{
     }
 
 
-    //liste des sujets en fonction d'une catégorie
+    //liste des topics en fonction d'une catégorie
     public function listTopicsByCategory($id) {
 
         $topicManager = new TopicManager();
@@ -51,8 +51,12 @@ class ForumController extends AbstractController implements ControllerInterface{
     }
 
 
-    //liste des posts en fonction du sujet choisi (id)
+    //liste des posts en fonction d'un topic choisi (id)
     public function listPostsByTopic($id){
+
+        //pour récupérer le nom du topic sur la page
+        $topicManager = new TopicManager();
+        $topics = $topicManager->findOneById($id);
 
         $postManager = new PostManager();
 
@@ -62,7 +66,8 @@ class ForumController extends AbstractController implements ControllerInterface{
             "view" => VIEW_DIR."forum/listPosts.php",
             "meta_description" => "Liste des postes du topic",
             "data" => [
-                "posts" => $posts
+                "posts" => $posts,
+                "topics" => $topics
             ]
         ];
     }

@@ -40,7 +40,7 @@
                             }
                             else{
                                 ?>
-                                <a href="index.php?ctrl=security&action=login">Sign in</a>
+                                <a href="index.php?ctrl=security&action=viewLogin">Login</a>
                                 <a href="index.php?ctrl=forum&action=index">Categories</a>
                                 <a href="index.php?ctrl=forum&action=listUsers">People</a>
                                 <!-- <a href="index.php?ctrl=">Profil</a> -->

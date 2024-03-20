@@ -3,13 +3,13 @@
     $topics = $result["data"]['topics']; 
     ?>
 
-<h1>Explore topics</h1>
+<h2><?=$category?> topics</h2>
 <div id="topics">
     <div class="topic-listing">
         <?php
 //lien de redirection vers les post sur le sujet
 foreach($topics as $topic ){ ?>
-        <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> by <?= $topic->getUser() ?></p>
+        <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> by <a href="index.php?ctrl=forum&action=findOneUser&id=<?=$topic->getUser()->getId()?>"><?= $topic->getUser() ?></a></p>
         <?php }
         // condition locked ici 
         ?>
@@ -17,14 +17,14 @@ foreach($topics as $topic ){ ?>
     <div class="topic-form">
         <h2>Create a new topic</h2>
         <label for="titre"></label>
-        <p><input type="text" name="titre" id="titre" placeholder="Title" require></p>
+        <input type="text" name="titre" id="titre" placeholder="Title" require><br>
 
         <!-- valeur qui ira dans post avec id_topic de celui nouvellement créé  -->
         <label for="texte"></label>
-        <p class="form-text"><input type="text" name="texte" placeholder="First message" require></input></p>
+        <input type="text" name="texte" placeholder="First message" require><br>
 
         <!-- lien vers une redirection  -->
-        <a href="#"><button class="btn"></button></a>
+        <button class="btn"><a href="#">Create</a></button>
         
     </div>
 </div>
