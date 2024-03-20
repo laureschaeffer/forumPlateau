@@ -12,7 +12,7 @@ final class Post extends Entity{
     private $id;
     private $texte;
     private $dateCreation;
-    private $membre; //c'est un objet
+    private $user; //c'est un objet
     private $topic; //objet
 
     public function __construct($data){         
@@ -63,15 +63,15 @@ final class Post extends Entity{
     }
 
 
-    public function getMembre()
+    public function getUser()
     {
-        return $this->membre;
+        return $this->user;
     }
 
 
-    public function setMembre($membre)
+    public function setUser($user)
     {
-        $this->membre = $membre;
+        $this->user = $user;
 
         return $this;
     }
@@ -94,4 +94,5 @@ final class Post extends Entity{
     public function __toString(){
         return $this->texte;
     }
+
 }

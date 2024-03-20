@@ -8,6 +8,7 @@ use App\ControllerInterface;
 use Model\Managers\CategoryManager;
 use Model\Managers\TopicManager;
 use Model\Managers\PostManager;
+use Model\Managers\UserManager;
 
 
 class ForumController extends AbstractController implements ControllerInterface{
@@ -18,7 +19,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         // créer une nouvelle instance de CategoryManager
         $categoryManager = new CategoryManager();
         // récupérer la liste de toutes les catégories grâce à la méthode findAll de Manager.php (triés par nom)
-        $categories = $categoryManager->findAll(["name", "DESC"]);
+        $categories = $categoryManager->findAll(["name", "ASC"]);
 
         // le controller communique avec la vue "listCategories" (view) pour lui envoyer la liste des catégories (data)
         return [
@@ -65,6 +66,44 @@ class ForumController extends AbstractController implements ControllerInterface{
             ]
         ];
     }
+
+    //liste de tous les users
+    public function listUsers(){
+
+        $userManager = new UserManager();
+
+        $users = $userManager->findAll(["dateInscription", "ASC"]);
+
+        return [
+            "view" => VIEW_DIR."forum/listUsers.php",
+            "meta_description" => "Liste des inscrits au forum",
+            "data" => [
+                "users" => $users
+            ]
+        ];
+    }
+
+    //detail d'un user et ses postes
+    public function findOneUser($id){
+        //infos generales
+        $userManager = new UserManager();
+        $userInfos = $userManager->findOneById($id);
+
+        //posts ou user_id = ...
+        $postManager = new PostManager();
+        $postsUser = $postManager->findPostsByUser($id);
+
+        return [
+            "view" => VIEW_DIR."forum/userInfo.php",
+            "meta_description" => "Detail d'un utilisateur",
+            "data" => [
+                "userInfos" => $userInfos,
+                "postsUser" => $postsUser
+            ]
+        ];
+    }
+
+
 
 
 

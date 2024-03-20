@@ -19,7 +19,22 @@ class PostManager extends Manager{
 
         $sql = "SELECT *
         FROM ".$this->tableName." p
-        WHERE p.topic_id = :id";
+        WHERE p.topic_id = :id
+        ORDER BY p.dateCreation ASC";
+
+        return $this->getMultipleResults(
+            DAO::select($sql, ['id' => $id]), $this->className
+        );
+    }
+
+
+    //posts d'un user
+    public function findPostsByUser($id){
+
+        $sql = "SELECT *
+        FROM ".$this->tableName." p
+        WHERE p.user_id = :id
+        ORDER BY p.dateCreation ASC";
 
         return $this->getMultipleResults(
             DAO::select($sql, ['id' => $id]), $this->className
