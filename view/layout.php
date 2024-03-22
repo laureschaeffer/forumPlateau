@@ -26,7 +26,7 @@
                             //si administrateur: vue des users
                             if(App\Session::isAdmin()){
                                 ?>
-                                <a href="index.php?ctrl=home&action=users">People</a>
+                                <a href="index.php?ctrl=home&action=listUsers">People</a>
                                 <?php } ?>
                                 <a href="index.php?ctrl=home&action=index">Home</a>
                                 <?php
@@ -41,14 +41,12 @@
                             // si l'utilisateur est connecté 
                             if(App\Session::getUser()){
                                 ?>
-                                <!-- a faire  -->
-                                <a href="index.php?ctrl=security&action=profile"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
+                                <a href="index.php?ctrl=home&action=profil"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
                                 <?php
                             }
                             else{
                                 ?>
                                 <a href="index.php?ctrl=security&action=viewLogin">Login</a>
-                                <!-- <a href="index.php?ctrl=">Profil</a> -->
                                 <?php
                             }
                             ?>

@@ -6,19 +6,16 @@
 <div id="categories">
 
 <?php
-foreach($categories as $category ){
+foreach($categories as $category ){ ?>
+    <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a></p>
+    <?php
     // si l'utilisateur est admin, possibilite de supprimer ou modifier 
-    if(App\Session::isAdmin()){
-        $delete= "<a href='index.php?ctrl=forum&action=deleteCategory&id=".$category->getId()."'><i class='fa-solid fa-trash'></i></a>";
-        $change = "<a href='index.php?ctrl=forum&action=changeCategory&id=".$category->getId()."'><i class='fa-solid fa-pen'></i></a>";
-    } else {
-        $delete= "";
-        $change= "";
-    }
-    ?>
-    <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a><?= $delete.$change?> </p>
-
-    <?php }
+    if(App\Session::isAdmin()){ ?>
+        <a href='index.php?ctrl=forum&action=deleteCategory&id=<?=$category->getId()?>'><i class='fa-solid fa-trash'></i></a>
+        <a href='index.php?ctrl=forum&action=changeCategory&id=<?=$category->getId()?>'><i class='fa-solid fa-pen'></i></a>
+    <?php
+    } 
+ }
 ?>
 
 </div>

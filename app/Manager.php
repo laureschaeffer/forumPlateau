@@ -78,6 +78,24 @@ abstract class Manager{
         return DAO::delete($sql, ['id' => $id]); 
     }
 
+    //update dans la bdd
+    // public function update($values, $id){
+    //     $sql = "UPDATE from ".$this->tableName."
+    //     SET ".$values."
+    //     WHERE id_".$this->tableName." = :id";
+
+    //     //$values: id=1, titre=painting, verouillage, ...
+    //     //id_post, id_topic, ...
+    //     try{
+    //         return DAO::update($sql, $values);
+    //     }
+    //     catch(\PDOException $e){
+    //         echo $e->getMessage();
+    //         die();
+    //     }
+    // }
+
+
     private function generate($rows, $class){
         foreach($rows as $row){
             yield new $class($row);

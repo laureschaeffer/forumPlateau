@@ -72,21 +72,6 @@ class ForumController extends AbstractController implements ControllerInterface{
         ];
     }
 
-    //liste de tous les users
-    // public function listUsers(){
-
-    //     $userManager = new UserManager();
-
-    //     $users = $userManager->findAll(["dateInscription", "ASC"]);
-
-    //     return [
-    //         "view" => VIEW_DIR."forum/listUsers.php",
-    //         "meta_description" => "Liste des inscrits au forum",
-    //         "data" => [
-    //             "users" => $users
-    //         ]
-    //     ];
-    // }
 
     //detail d'un user et ses postes
     public function findOneUser($id){
@@ -97,6 +82,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         //posts ou user_id = ...
         $postManager = new PostManager();
         $postsUser = $postManager->findPostsByUser($id);
+
 
         return [
             "view" => VIEW_DIR."forum/userInfo.php",
@@ -153,12 +139,13 @@ class ForumController extends AbstractController implements ControllerInterface{
             }
         }
     }
-
-
-        // ------------------------------------------------------actions si admin----------------------------------
+    
+    // ------------------------------------------------------actions en fonctions des roles -------------------------------------
 
     //supprimer la categorie
     public function deleteCategory($id){
+        // $this->restrictTo("ROLE_ADMIN");
+        
         $categoryManager = new CategoryManager();
         $categoryManager->delete($id);
 
@@ -170,8 +157,23 @@ class ForumController extends AbstractController implements ControllerInterface{
     //     $categoryManager = new CategoryManager();
 
     //     //recupere le nom ici
-
+    //     $data=[""];
     //     //execute
-    //     $categoryManager->changeCategoryBDD($name, $id);
+    //     $categoryManager->update($data, $id);
     // }
+
+    //verouille un topic
+    public function lockTopic($id){
+        $topicManager = new TopicManager();
+        //pour "SET verouillage=1" dans le manager
+        $values = ["verouillage = 1"];
+
+        //update attend les valeurs à modifier et l'id de l'endroit à modifier
+        $topicManager->update($values, $id);
+
+        // $this->redirectTo("forum", "index"); exit;
+
+    }
+
+
 }

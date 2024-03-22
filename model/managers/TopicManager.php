@@ -38,4 +38,16 @@ class TopicManager extends Manager{
             DAO::select($sql, ['titre' =>$titre], false), $this->className
         );
     }
+
+    //topic par utilisateur
+    public function findTopicsUser($id){
+        $sql = "SELECT * from ".$this->tableName." 
+        WHERE user_id = :id";
+
+        return $this->getMultipleResults(
+            DAO::select($sql, ['id' => $id]),
+            $this->className
+        );
+    }
+
 }

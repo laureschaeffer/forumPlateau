@@ -9,7 +9,7 @@ $users = $result['data']['users'];
         <div class="user-listing">
             <div class="user">
                 <p><?=$user?></p>
-                <p>Since <?=$user->getDateInscription()->format('Y')?></p>
+                <p>Since <?=$user->getDateInscription()->format('d-m-Y')?></p>
                 <!-- lien pour voir l'utilisateur  -->
                 <a href="index.php?ctrl=forum&action=findOneUser&id=<?=$user->getId()?>">See more</a>
             </div>

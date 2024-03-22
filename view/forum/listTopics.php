@@ -9,14 +9,14 @@
 <?php
 foreach($topics as $topic ){ 
     // si verouillage = 0 (pas verouillé) afficher le cadenas pour verouiller, sinon afficher qu'il est déjà verouillé
-    //et si personne admin pour modifier
     if($topic->getVerouillage() == 0){
-        $lockStatu= "<i class='fa-solid fa-unlock'></i>";
+        $lockStatut= "<a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."'><i class='fa-solid fa-unlock'></i></a>"; 
+        // $lockStatut= "<i class='fa-solid fa-unlock'></i>";
     } else {
-        $lockStatu = "<i class='fa-solid fa-lock'></i>";
+        $lockStatut = "<i class='fa-solid fa-lock'></i>";
     }
     ?>
-        <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatu?> by <a href="index.php?ctrl=forum&action=findOneUser&id=<?=$topic->getUser()->getId()?>"><?= $topic->getUser() ?></a></p>
+        <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?> by <a href="index.php?ctrl=forum&action=findOneUser&id=<?=$topic->getUser()->getId()?>"><?= $topic->getUser() ?></a></p>
         <?php 
         //si personne admin OU auteur du topic (a faire)
         if(App\Session::isAdmin()){

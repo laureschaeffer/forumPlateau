@@ -19,18 +19,48 @@ class HomeController extends AbstractController implements ControllerInterface {
         ];
     }
         
-    public function users(){
-        $this->restrictTo("ROLE_USER");
+    //tous les user, accessibles seulement aux admins
+    public function listUsers(){
+        $this->restrictTo("ROLE_ADMIN");
 
         $manager = new UserManager();
-        $users = $manager->findAll(['register_date', 'DESC']);
+        $users = $manager->findAll(['dateInscription', 'DESC']);
 
         return [
-            "view" => VIEW_DIR."security/users.php",
+            "view" => VIEW_DIR."forum/listUsers.php",
             "meta_description" => "Liste des utilisateurs du forum",
             "data" => [ 
                 "users" => $users 
             ]
         ];
     }
+
+    //profil de la personne, à récupérer dans session
+    public function profil(){
+        $id = Session::getUser()->getId();
+
+        //infos generales
+        $userManager = new UserManager();
+        $userInfos = $userManager->findOneById($id);
+
+        //posts
+        $postManager = new PostManager();
+        $postsUser = $postManager->findPostsByUser($id);
+
+        //topics créés
+        $topicManager = new TopicManager();
+        $topicsUser = $topicManager->findTopicsUser($id);
+
+        return [
+            "view" => VIEW_DIR."forum/profil.php",
+            "meta_description" => "Your profil",
+            "data" => [
+                "userInfos" => $userInfos,
+                "postsUser" => $postsUser,
+                "topicsUser" => $topicsUser
+            ]
+        ];
+    }
+
+    
 }
