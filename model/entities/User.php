@@ -82,7 +82,7 @@ final class User extends Entity{
 
     public function setDateInscription($dateInscription)
     {
-        $this->dateInscription = $dateInscription;
+        $this->dateInscription = new \DateTime($dateInscription);
 
         return $this;
     }
@@ -104,5 +104,14 @@ final class User extends Entity{
     
     public function __toString() {
         return $this->pseudo;
+    }
+
+    //verifie le role des user
+    public function hasRole($role){
+        if ($this->getRole() == $role) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

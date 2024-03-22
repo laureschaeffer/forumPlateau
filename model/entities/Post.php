@@ -57,7 +57,7 @@ final class Post extends Entity{
 
     public function setDateCreation($dateCreation)
     {
-        $this->dateCreation = $dateCreation;
+        $this->dateCreation = new \DateTime($dateCreation);
 
         return $this;
     }

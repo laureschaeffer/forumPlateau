@@ -13,4 +13,13 @@ class CategoryManager extends Manager{
     public function __construct(){
         parent::connect();
     }
+
+    //modifier une categorie
+    public function changeCategoryBDD($name, $id){
+        $sql= "UPDATE ".$this->tableName. "
+        SET NAME = :name
+        WHERE id_category= :id";
+
+        $sql->execute(["name"=>$name ,"id"=>$id]);
+    }
 }

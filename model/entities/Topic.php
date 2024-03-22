@@ -51,7 +51,7 @@ final class Topic extends Entity{
 
     public function setDateCreation($dateCreation)
     {
-        $this->dateCreation = $dateCreation;
+        $this->dateCreation = new \DateTime($dateCreation);
 
         return $this;
     }

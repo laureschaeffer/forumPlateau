@@ -29,4 +29,13 @@ class TopicManager extends Manager{
             $this->className
         );
     }
+
+    //cherche le titre d'un topic, pour le formulaire d'ajout
+    public function findTopicTitle($titre){
+        $sql = "SELECT id_topic, titre FROM ".$this->tableName;
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['titre' =>$titre], false), $this->className
+        );
+    }
 }

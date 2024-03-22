@@ -39,7 +39,7 @@ class SecurityController extends AbstractController{
                 //renvoie true si existe
                 if(!$userMail && !$userPseudo){
 
-                    //verifier que les 2 mdp sont identiques et longueur>5 (12 recommandation de la cnil)
+                    //verifier que les 2 mdp sont identiques et longueur>12 (recommandation de la cnil)
                     if($pass1 == $pass2 && strlen($pass1 >=12)){
                         //tableau attendu en argument pour la fonction add
                         $data = ['email' => $email, 'pseudo' => $pseudo, 'motdePasse' => password_hash($pass1, PASSWORD_DEFAULT)];
@@ -106,5 +106,20 @@ class SecurityController extends AbstractController{
     }
 
 
-    public function logout () {}
+    //deconnecte
+    public function logout () {
+        unset($_SESSION["user"]); 
+
+        $this->redirectTo("home", "index"); exit;
+    }
+
+    //affiche le profil
+    public function profil(){
+
+        return [
+            "view" => VIEW_DIR."profil.php",
+            "meta_description" => "My profil"
+        ];
+    }
+
 }

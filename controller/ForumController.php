@@ -73,20 +73,20 @@ class ForumController extends AbstractController implements ControllerInterface{
     }
 
     //liste de tous les users
-    public function listUsers(){
+    // public function listUsers(){
 
-        $userManager = new UserManager();
+    //     $userManager = new UserManager();
 
-        $users = $userManager->findAll(["dateInscription", "ASC"]);
+    //     $users = $userManager->findAll(["dateInscription", "ASC"]);
 
-        return [
-            "view" => VIEW_DIR."forum/listUsers.php",
-            "meta_description" => "Liste des inscrits au forum",
-            "data" => [
-                "users" => $users
-            ]
-        ];
-    }
+    //     return [
+    //         "view" => VIEW_DIR."forum/listUsers.php",
+    //         "meta_description" => "Liste des inscrits au forum",
+    //         "data" => [
+    //             "users" => $users
+    //         ]
+    //     ];
+    // }
 
     //detail d'un user et ses postes
     public function findOneUser($id){
@@ -108,8 +108,70 @@ class ForumController extends AbstractController implements ControllerInterface{
         ];
     }
 
+    //formulaire ajout d'un topic avec ajout d'une publication sur ce topic, id de category
+    public function formTopic($id){
+        
+        // dabord on filtre 
+        if(isset($_POST['submit'])){
+            $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans topic
+
+            $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans post
+
+            
+            // pour l'instant sur id d'un user fixe
+            if ($titre && $texte){
+
+                // verifie que le titre du topic n'existe pas déjà 
+                $topicManager = new TopicManager();
+                $titreTopicBDD = $topicManager->findTopicTitle($titre);
+    
+                //renvoie true si le titre existe
+                if(!$titreTopicBDD){
+                    //ajout topic
+                    //tableau attendu en argument pour la fonction add
+                    $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>3];
+    
+                    //recupere id du topic
+                    $idTopic= $topicManager->add($dataTopic);
+    
+                    //ajoute post
+                    $postManager = new PostManager();
+                    //tableau attendu en argument pour la fonction add
+                    $dataPost = ['texte' => $texte, 'user_id' => 3, 'topic_id' =>$idTopic];
+    
+                    $postManager->add($dataPost);
+    
+                    //si tout est bon
+                    $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
+    
+                } else {
+                    //ici message d'erreur 
+
+                    //redirection
+                    $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                }
+            }
+        }
+    }
 
 
+        // ------------------------------------------------------actions si admin----------------------------------
 
+    //supprimer la categorie
+    public function deleteCategory($id){
+        $categoryManager = new CategoryManager();
+        $categoryManager->delete($id);
 
+        $this->redirectTo("forum", "index"); exit;
+    }
+
+    //modifier le nom d'une categorie
+    // public function changeCategory($id){
+    //     $categoryManager = new CategoryManager();
+
+    //     //recupere le nom ici
+
+    //     //execute
+    //     $categoryManager->changeCategoryBDD($name, $id);
+    // }
 }
