@@ -6,61 +6,208 @@
 
 :root{
     --text-family: "Gayathri", sans-serif;
+    --text-size: 1.1em;
+    --title-size: 1.5em;
+
+    --border-size: 25px;
+
     --main-txt-color: #fff; 
+    --publication-bg-color: #B1AFC6;
+    /* --main-bg-color: linear-gradient(#604958, #837ea7); */
+    --main-bg-color: linear-gradient( #837ea7, #604958);
+    --btn-color: #B2675E;
 }
 
+/* -------------------------general----------------------------- */
+
 #wrapper{
-    background: linear-gradient(#837ea7, #604958);
+    background: var(--main-bg-color);
     width: 100%;
     min-height: 100vh;
     font-family: var(--text-family);
 }
 
-p{
-    padding: 2%;
+.log-btn{
+    background-color: #604958;
+    padding: 5px 20px;
+    border-radius: var(--border-size);
 }
 
 h2{
     text-align: center;
+    color: var(--main-txt-color);
+    size: var(--title-size);
+    padding: 20px 0;
 }
 
+.btn-container{
+    display: flex;
+    justify-content: center;
+}
 
 .btn{
     padding: 5px 25px;
-    border-radius: 25px;
+    border-radius: var(--border-size);
+    background-color: var(--btn-color);
+    border: none;
+    color: var(--main-txt-color);
 }
 
 i{
     color: var(--main-txt-color);
 }
+
+.line-break{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.line{
+    width: 50vw;
+}
+
+/* ---------------------------------------------------------homepage----------------------------- */
+
+/* nav  */
+nav a{
+    /* text-decoration: none; */
+    color: var(--main-txt-color);
+}
+
+#first-nav{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 10px 0;
+}
+#first-nav a{
+    text-decoration: none;
+}
+
+#second-nav{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+
 /* -------------------------------------------------------------------listes------------------------------------------------------------ */
 
+#publications, #categories, #topics{
+    margin: 0 10px;
+}
 /* ---------------categories----------------------- */
 
-/* #categories p{
-    padding: 2% 5%;
-} */
+#categories a{
+    color: var(--main-txt-color);
+}
+
+#categories p{
+    padding: 10px 5px;
+}
 
 
 /* -------------topics------------------------- */
-/* #topics p{
-    padding: 2% 5%;
-} */
+#topics a{
+    color: var(--main-txt-color);
+    font-size: var(--text-size);
+}
+
+.topic-listing p{
+    padding: 10px 5px;
+}
+
+/* ------------------publications--------------- */
 
 
 
+.publication{
+    background-color: var(--publication-bg-color);
+    border-radius: var(--border-size);
+    padding: 20px;
+    margin: 10px;
+}
+
+.publication-header{
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.publication-header a{
+    color: black;
+}
+
+.publication-header p{
+    font-weight: bolder;
+}
 
 
+/* ------------------------------------user info--------------------- */
+
+.user-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.user-info p{
+    font-size: larger;
+    font-weight: 1000;
+}
+
+.user-post{
+    background-color: var(--publication-bg-color);
+    border-radius: var(--border-size);
+    padding: 20px;
+    margin: 10px;
+}
+
+.user-post-header p, .user-post-header a{
+    color: black;
+    font-weight: 1000;
+}
+
+.user-post-main{
+    margin-top: 10px;
+}
 
 
+/* ----------formulaires---------- */
 
+form{
+    display: flex;
+    flex-direction: column;
+}
 
+#titre, #texte{
+    background-color: transparent;
+    border: #b1afc6 solid;
+    outline: none;
+    border-radius: var(--border-size);
+}
+#titre{
+    padding: 10px;
+    margin: 0 10px;
+}
+#texte{
+    margin: 0 10px;
+    padding: 10px 50px 50px 10px;
+}
 
-
-
+::placeholder{
+    color: var(--main-txt-color);
+}
 
 
 
 footer{
     text-align: center;
+}
+
+footer p, footer a{
+    color: var(--main-txt-color);
 }

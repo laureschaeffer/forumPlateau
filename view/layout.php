@@ -22,35 +22,27 @@
                 <header>
                     <nav>
                         <div id="first-nav">
+                            <a href="index.php?ctrl=home&action=index">Home</a>
+                            <?php
+                                // si l'utilisateur est connecté 
+                                if(App\Session::getUser()){ ?>
+                                    <a href="index.php?ctrl=security&action=logout" class="log-btn">Log out</a>
+                                    <a href="index.php?ctrl=home&action=profil"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
+                                    <?php
+                            } else { ?>
+                                    <a href="index.php?ctrl=security&action=viewLogin" class="log-btn">Login</a>
+                                    <?php
+                            }
+                            ?>     
+                        </div>
+                        <div id="second-nav">
+                            <a href="index.php?ctrl=forum&action=index">Categories</a>
                             <?php
                             //si administrateur: vue des users
                             if(App\Session::isAdmin()){
                                 ?>
                                 <a href="index.php?ctrl=home&action=listUsers">People</a>
                                 <?php } ?>
-                                <a href="index.php?ctrl=home&action=index">Home</a>
-                                <?php
-                                if(App\Session::getUser()){ ?>
-                                    <a href="index.php?ctrl=security&action=logout">Log out</a>
-                                    <?php
-                                }
-                                ?>
-                        </div>
-                        <div id="second-nav">
-                        <?php
-                            // si l'utilisateur est connecté 
-                            if(App\Session::getUser()){
-                                ?>
-                                <a href="index.php?ctrl=home&action=profil"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
-                                <?php
-                            }
-                            else{
-                                ?>
-                                <a href="index.php?ctrl=security&action=viewLogin">Login</a>
-                                <?php
-                            }
-                            ?>
-                            <a href="index.php?ctrl=forum&action=index">Categories</a>
                         </div>
                     </nav>
                 </header>

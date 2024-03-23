@@ -9,20 +9,22 @@ $postsUser=$result['data']['postsUser'];
         <p><?=$userInfos?></p>
         <p>Since <?=$userInfos->getDateInscription()->format('d-m-Y')?></p>
     </div>
-    <div class="user-post">
-        <?php foreach($postsUser as $post){ ?>
+    <?php foreach($postsUser as $post){ ?>
+        <div class="user-post">
             <div class="user-post-header">
-            <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$post->getTopic()->getId()?>"><?=$post->getTopic()?></a></p>
+                <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$post->getTopic()->getId()?>"><?=$post->getTopic()?></a></p>
                 <p><?=$post->getDateCreation()->format('d-m-Y H:i')?></p>
             </div>
             <div class="user-post-main">
                 <p><?=$post?></p>
             </div>
-            <hr />
-            <?php
+        </div>
+        <div class="line-break">
+            <hr class="line" />
+        </div>
+        <?php
         }
         ?>
-    </div>
 
 
 </div>

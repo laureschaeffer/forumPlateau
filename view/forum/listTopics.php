@@ -36,9 +36,12 @@ foreach($topics as $topic ){
     
             <!-- valeur qui ira dans post avec id_topic de celui nouvellement créé  -->
             <label for="texte"></label>
-            <input type="text" name="texte" placeholder="First message" require><br>
+            <textarea name="texte" id="texte" placeholder="First message" require></textarea><br>
+            <!-- <input type="text" name="texte" id="texte" placeholder="First message" require><br> -->
     
-            <button class="btn" type="submit" name="submit">Create</button>
+            <div class="btn-container">
+                <button class="btn" type="submit" name="submit">Create</button>
+            </div>
 
         </form>
         
