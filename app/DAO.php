@@ -53,7 +53,7 @@ abstract class DAO{
     public static function update($sql, $params){
         try{
             $stmt = self::$bdd->prepare($sql);
-            
+
             //on renvoie l'état du statement après exécution (true ou false)
             return $stmt->execute($params);
             

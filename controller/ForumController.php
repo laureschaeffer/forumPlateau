@@ -109,13 +109,13 @@ class ForumController extends AbstractController implements ControllerInterface{
 
                 // verifie que le titre du topic n'existe pas déjà 
                 $topicManager = new TopicManager();
-                // $titreTopicBDD = $topicManager->findTopicTitle($titre);
+                $titreTopicBDD = $topicManager->findTopicTitle($titre);
     
                 //renvoie true si le titre existe
-                // if(!$titreTopicBDD){
-                    //ajout topic
+                if(!$titreTopicBDD){
+                    $idUser = Session::getUser()->getId(); //id de l'user
                     //tableau attendu en argument pour la fonction add
-                    $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>3];
+                    $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
     
                     //recupere id du topic
                     $idTopic= $topicManager->add($dataTopic);
@@ -123,7 +123,6 @@ class ForumController extends AbstractController implements ControllerInterface{
                     //ajoute post
                     $postManager = new PostManager();
 
-                    $idUser = Session::getUser()->getId(); //id de l'user
                     //tableau attendu en argument pour la fonction add
                     $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
     
@@ -132,24 +131,24 @@ class ForumController extends AbstractController implements ControllerInterface{
                     //si tout est bon
                     $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
     
-                // } else {
-                //     //ici message d'erreur 
+                } else {
+                    //ici message d'erreur 
 
-                //     //redirection
-                //     $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
-                // }
+                    //redirection
+                    $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                }
             }
         }
     }
     
     // ------------------------------------------------------actions en fonctions des roles -------------------------------------
 
-    //supprimer la categorie
-    public function deleteCategory($id){
+    //supprimer un post : admin ou propriétaire
+    public function deletePost($id){
         // $this->restrictTo("ROLE_ADMIN");
         
-        $categoryManager = new CategoryManager();
-        $categoryManager->delete($id);
+        $postManager = new PostManager();
+        $postManager->delete($id);
 
         $this->redirectTo("forum", "index"); exit;
     }
@@ -167,17 +166,25 @@ class ForumController extends AbstractController implements ControllerInterface{
     //verouille un topic
     public function lockTopic($id){
         $topicManager = new TopicManager();
-        //pour "SET verouillage=1" dans le manager
-        $values = [
-            "values" => "verouillage = 1",
-            "id" => $id
-            ];
-            var_dump($values);
+        //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+        $data =["verouillage"=>1];
+
         //update attend les valeurs à modifier et l'id de l'endroit à modifier
-        $topicManager->update($values);
+        $topicManager->update($data, $id);
 
-        // $this->redirectTo("forum", "index"); exit;
+        $this->redirectTo("forum", "index"); exit;
+    }
 
+    //deverouille un topic
+    public function unlockTopic($id){
+        $topicManager = new TopicManager();
+        //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+        $data =["verouillage"=>0];
+
+        //update attend les valeurs à modifier et l'id de l'endroit à modifier
+        $topicManager->update($data, $id);
+
+        $this->redirectTo("forum", "index"); exit;
     }
 
 

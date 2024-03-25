@@ -13,14 +13,21 @@
         //verifie si le topic a été créé par l'utilisateur connecté ou un autre
         $userTopic=$post->getUser()->getId();
         $userSession =$_SESSION['user']->getId();
-        //pas de lien si on est la personne qui a créée
-        ($userTopic == $userSession ? $user = "you" : $user= $post->getUser()); 
-        ($userTopic == $userSession ? $lien = $user : $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
+        //si la personne connectée est la personne qui a publié le post
+        if($userTopic == $userSession){
+            $user = "you";
+            $lien = $user; //pas de lien vers les infos d'une personne
+            $supprimerPost= "<a href='index.php?ctrl=forum&action=deletePost&id=".$post->getId()."'>Supprimer</a>";
+        } else {
+            $user= $post->getUser(); 
+            $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"; 
+        }
         ?>
     <div class="publication">
         <div class="publication-header">
             <p><?=$lien ?></a></p>
             <p><?= $post->getDateCreation()->format('d-m-Y H:i')?></p> 
+            <p><?=$supprimerPost?></p>
         </div>
         <div class="publication-main">
             <p><?= $post ?></p>

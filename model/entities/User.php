@@ -38,7 +38,7 @@ final class User extends Entity{
     }
 
 
-    public function setMail($email)
+    public function setEmail($email)
     {
         $this->email = $email;
 

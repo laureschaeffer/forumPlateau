@@ -79,15 +79,21 @@ abstract class Manager{
     }
 
     //update dans la bdd
-    public function update($values){
-            $sql = "UPDATE from ".$this->tableName."
-            SET :values
-            WHERE id_".$this->tableName." = :id";
+    public function update($data, $id){
 
-            //$values: titre=painting, verouillage=1, ...
-            //where id_post, id_topic, ...
+        $result= [];
+        //tableau pour savoir quelle colonne modifier avec quelle valeur
+        foreach($data as $keys => $values){
+            $result[]= $keys." = ".$values." ";
+        }
+
+        // lit SET colonne1 = valeur, colonne2=valeur2, ...
+        $sql = "UPDATE ".$this->tableName."
+        SET ".implode(', ', $result)."
+        WHERE id_".$this->tableName." = :id"; //where id_post, id_topic, ...
+
             try{
-            return DAO::update($sql, $values);
+                return DAO::update($sql, ['id' => $id]);
             }
         catch(\PDOException $e){
             echo $e->getMessage();

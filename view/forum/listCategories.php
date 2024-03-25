@@ -11,7 +11,6 @@ foreach($categories as $category ){ ?>
     <?php
     // si l'utilisateur est admin, possibilite de supprimer ou modifier 
     if(App\Session::isAdmin()){ ?>
-        <a href='index.php?ctrl=forum&action=deleteCategory&id=<?=$category->getId()?>'><i class='fa-solid fa-trash'></i></a>
         <a href='index.php?ctrl=forum&action=changeCategory&id=<?=$category->getId()?>'><i class='fa-solid fa-pen'></i></a>
     <?php
     } 
