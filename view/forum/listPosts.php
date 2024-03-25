@@ -1,6 +1,7 @@
 <?php               //listes de post en lien avec la categorie choisie
     $posts = $result["data"]['posts']; 
     $topics = $result["data"]['topics']; //pour avoir le titre de la page
+    $category= strtolower($topics->getCategory()); //pour avoir le nom du topic de la categorie
     ?>
 
 
@@ -9,10 +10,16 @@
 <div id="publications">
 <?php
     foreach($posts as $post ){ 
+        //verifie si le topic a été créé par l'utilisateur connecté ou un autre
+        $userTopic=$post->getUser()->getId();
+        $userSession =$_SESSION['user']->getId();
+        //pas de lien si on est la personne qui a créée
+        ($userTopic == $userSession ? $user = "you" : $user= $post->getUser()); 
+        ($userTopic == $userSession ? $lien = $user : $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
         ?>
     <div class="publication">
         <div class="publication-header">
-            <p><a href="index.php?ctrl=forum&action=findOneUser&id=<?=$post->getUser()->getId()?>"><?= $post->getUser() ?></a></p>
+            <p><?=$lien ?></a></p>
             <p><?= $post->getDateCreation()->format('d-m-Y H:i')?></p> 
         </div>
         <div class="publication-main">
@@ -24,5 +31,5 @@
     </div>
     <?php }
     ?>
-    <!-- <p>Go back to <?=$topics->getCategorie()?></p> -->
+    <p>Go back to <a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?=$topics->getCategory()->getId()?>"><?=$category?></a> publications</p>
 </div>

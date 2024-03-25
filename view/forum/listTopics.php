@@ -10,22 +10,29 @@
 foreach($topics as $topic ){ 
     // si verouillage = 0 (pas verouillé) afficher le cadenas pour verouiller, sinon afficher qu'il est déjà verouillé
     if($topic->getVerouillage() == 0){
-        $lockStatut= "<a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."'><i class='fa-solid fa-unlock'></i></a>"; 
-        // $lockStatut= "<i class='fa-solid fa-unlock'></i>";
+        $lockStatut= "<i class='fa-solid fa-unlock'></i>"; 
     } else {
         $lockStatut = "<i class='fa-solid fa-lock'></i>";
     }
-    ?>
-        <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?> by <a href="index.php?ctrl=forum&action=findOneUser&id=<?=$topic->getUser()->getId()?>"><?= $topic->getUser() ?></a></p>
-        <?php 
-        //si personne admin OU auteur du topic (a faire)
-        if(App\Session::isAdmin()){
-            $lock="<a href='index.php?ctrl=forum&action=lockCategory&id=".$category->getId()."'><i class='fa-solid fa-unlock'></i></a>";
-        }
+    //verifie si le topic a été créé par l'utilisateur connecté ou un autre
+    $userTopic=$topic->getUser()->getId();
+    $userSession =$_SESSION['user']->getId();
+    ($userTopic == $userSession ? $user = "you" : $user= $topic->getUser()); 
+    //pas de lien si on est la personne qui a créée
+    ($userTopic == $userSession ? $lien = $user : $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
     
+    //si personne admin OU auteur du topic tu peux verouiller, sinon pas de lien
+    if(App\Session::isAdmin() || $userTopic == $userSession){
+        $lock="<a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."'><i class='fa-solid fa-lock'></i></a>";
+    } else{
+        $lock="";
     }
-        
-        ?>
+    ?>
+
+    <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lock?> by <?=$lien?></a></p>
+    <?php
+}
+    ?>    
     </div>
     <div class="topic-form">
         <h2>Create a new topic</h2>

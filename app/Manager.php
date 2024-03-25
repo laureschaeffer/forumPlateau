@@ -79,21 +79,21 @@ abstract class Manager{
     }
 
     //update dans la bdd
-    // public function update($values, $id){
-    //     $sql = "UPDATE from ".$this->tableName."
-    //     SET ".$values."
-    //     WHERE id_".$this->tableName." = :id";
+    public function update($values){
+            $sql = "UPDATE from ".$this->tableName."
+            SET :values
+            WHERE id_".$this->tableName." = :id";
 
-    //     //$values: id=1, titre=painting, verouillage, ...
-    //     //id_post, id_topic, ...
-    //     try{
-    //         return DAO::update($sql, $values);
-    //     }
-    //     catch(\PDOException $e){
-    //         echo $e->getMessage();
-    //         die();
-    //     }
-    // }
+            //$values: titre=painting, verouillage=1, ...
+            //where id_post, id_topic, ...
+            try{
+            return DAO::update($sql, $values);
+            }
+        catch(\PDOException $e){
+            echo $e->getMessage();
+            die();
+        }
+    }
 
 
     private function generate($rows, $class){

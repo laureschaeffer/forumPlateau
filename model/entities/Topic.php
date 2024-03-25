@@ -13,7 +13,7 @@ final class Topic extends Entity{
     private $titre;
     private $dateCreation;
     private $verouillage;
-    private $categorie;
+    private $category;
     private $user;
 
     public function __construct($data){         
@@ -71,15 +71,15 @@ final class Topic extends Entity{
     }
 
 
-    public function getCategorie()
+    public function getCategory()
     {
-        return $this->categorie;
+        return $this->category;
     }
 
 
-    public function setCategorie($categorie)
+    public function setCategory($category)
     {
-        $this->categorie = $categorie;
+        $this->category = $category;
 
         return $this;
     }

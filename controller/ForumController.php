@@ -109,10 +109,10 @@ class ForumController extends AbstractController implements ControllerInterface{
 
                 // verifie que le titre du topic n'existe pas déjà 
                 $topicManager = new TopicManager();
-                $titreTopicBDD = $topicManager->findTopicTitle($titre);
+                // $titreTopicBDD = $topicManager->findTopicTitle($titre);
     
                 //renvoie true si le titre existe
-                if(!$titreTopicBDD){
+                // if(!$titreTopicBDD){
                     //ajout topic
                     //tableau attendu en argument pour la fonction add
                     $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>3];
@@ -122,20 +122,22 @@ class ForumController extends AbstractController implements ControllerInterface{
     
                     //ajoute post
                     $postManager = new PostManager();
+
+                    $idUser = Session::getUser()->getId(); //id de l'user
                     //tableau attendu en argument pour la fonction add
-                    $dataPost = ['texte' => $texte, 'user_id' => 3, 'topic_id' =>$idTopic];
+                    $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
     
                     $postManager->add($dataPost);
     
                     //si tout est bon
                     $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
     
-                } else {
-                    //ici message d'erreur 
+                // } else {
+                //     //ici message d'erreur 
 
-                    //redirection
-                    $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
-                }
+                //     //redirection
+                //     $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                // }
             }
         }
     }
@@ -166,10 +168,13 @@ class ForumController extends AbstractController implements ControllerInterface{
     public function lockTopic($id){
         $topicManager = new TopicManager();
         //pour "SET verouillage=1" dans le manager
-        $values = ["verouillage = 1"];
-
+        $values = [
+            "values" => "verouillage = 1",
+            "id" => $id
+            ];
+            var_dump($values);
         //update attend les valeurs à modifier et l'id de l'endroit à modifier
-        $topicManager->update($values, $id);
+        $topicManager->update($values);
 
         // $this->redirectTo("forum", "index"); exit;
 
