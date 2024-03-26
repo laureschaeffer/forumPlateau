@@ -14,39 +14,13 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Listage de la structure de la base pour forum_laure
-CREATE DATABASE IF NOT EXISTS `forum_laure` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `forum_laure`;
-
--- Listage de la structure de table forum_laure. category
-CREATE TABLE IF NOT EXISTS `category` (
-  `id_category` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id_category`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- Listage des données de la table forum_laure.category : ~2 rows (environ)
+-- Listage des données de la table forum_laure.category : ~5 rows (environ)
 INSERT INTO `category` (`id_category`, `name`) VALUES
 	(1, 'Art'),
 	(2, 'Fiction'),
 	(3, 'Cooking'),
 	(4, 'Science'),
 	(5, 'Technologie');
-
--- Listage de la structure de table forum_laure. post
-CREATE TABLE IF NOT EXISTS `post` (
-  `id_post` int NOT NULL AUTO_INCREMENT,
-  `texte` text NOT NULL,
-  `dateCreation` datetime DEFAULT CURRENT_TIMESTAMP,
-  `user_id` int NOT NULL,
-  `topic_id` int NOT NULL,
-  PRIMARY KEY (`id_post`) USING BTREE,
-  KEY `FK_message_sujet` (`topic_id`) USING BTREE,
-  KEY `FK_message_membre` (`user_id`) USING BTREE,
-  CONSTRAINT `FK_message_membre` FOREIGN KEY (`user_id`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_message_sujet` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id_topic`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Listage des données de la table forum_laure.post : ~11 rows (environ)
 INSERT INTO `post` (`id_post`, `texte`, `dateCreation`, `user_id`, `topic_id`) VALUES
@@ -58,26 +32,10 @@ INSERT INTO `post` (`id_post`, `texte`, `dateCreation`, `user_id`, `topic_id`) V
 	(6, 'This is a post about quantum physics.', '2024-03-23 10:15:00', 1, 18),
 	(7, 'I\'m so fascinated and admirating about artificial intelligence progress!', '2024-03-22 15:00:00', 2, 19),
 	(8, 'What are your favorite work of art from the XXIe century?', '2024-03-21 10:00:00', 3, 20),
-	(9, 'Classical music are beyond the era and centuries.', '2024-03-20 18:45:00', 3, 21),
-	(10, 'My fav serie from all time is probably ....', '2024-03-25 10:32:14', 4, 22),
-	(11, 'blablabla', '2024-03-25 14:03:29', 4, 23);
+	(9, 'Classical music are beyond the era and centuries...', '2024-03-20 18:45:00', 3, 21),
+	(10, 'My fav serie from all time is probably this one ', '2024-03-25 10:32:14', 4, 22);
 
--- Listage de la structure de table forum_laure. topic
-CREATE TABLE IF NOT EXISTS `topic` (
-  `id_topic` int NOT NULL AUTO_INCREMENT,
-  `titre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `verouillage` tinyint DEFAULT '0',
-  `category_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  PRIMARY KEY (`id_topic`) USING BTREE,
-  KEY `FK_sujet_membre` (`user_id`) USING BTREE,
-  KEY `FK_sujet_categorie` (`category_id`) USING BTREE,
-  CONSTRAINT `FK_sujet_categorie` FOREIGN KEY (`category_id`) REFERENCES `category` (`id_category`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_sujet_membre` FOREIGN KEY (`user_id`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- Listage des données de la table forum_laure.topic : ~11 rows (environ)
+-- Listage des données de la table forum_laure.topic : ~0 rows (environ)
 INSERT INTO `topic` (`id_topic`, `titre`, `dateCreation`, `verouillage`, `category_id`, `user_id`) VALUES
 	(1, 'Painting', '2024-03-19 11:11:58', 0, 1, 1),
 	(2, 'Movies', '2024-03-19 11:14:08', 0, 2, 2),
@@ -88,19 +46,7 @@ INSERT INTO `topic` (`id_topic`, `titre`, `dateCreation`, `verouillage`, `catego
 	(19, 'Les dernières avancées en intelligence artificielle', '2024-03-22 14:30:00', 0, 4, 2),
 	(20, 'L\'art du XXIe siècle', '2024-03-21 09:45:00', 0, 1, 3),
 	(21, 'Influences de la musique classique sur la musique moderne', '2024-03-20 18:20:00', 0, 1, 3),
-	(22, 'Series', '2024-03-25 10:32:14', 0, 2, 4),
-	(23, 'test', '2024-03-25 14:03:29', 0, 2, 4);
-
--- Listage de la structure de table forum_laure. user
-CREATE TABLE IF NOT EXISTS `user` (
-  `id_user` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `pseudo` varchar(50) NOT NULL,
-  `motDePasse` varchar(255) NOT NULL,
-  `dateInscription` datetime DEFAULT CURRENT_TIMESTAMP,
-  `role` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'ROLE_USER',
-  PRIMARY KEY (`id_user`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+	(22, 'Series', '2024-03-25 10:32:14', 0, 2, 4);
 
 -- Listage des données de la table forum_laure.user : ~4 rows (environ)
 INSERT INTO `user` (`id_user`, `email`, `pseudo`, `motDePasse`, `dateInscription`, `role`) VALUES

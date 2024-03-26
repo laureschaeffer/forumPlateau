@@ -13,10 +13,10 @@
             // si verouillage = 0 (pas verouillé) pas de cadenas, sinon afficher qu'il est verouillé ; action pour le lien plus bas pour vérouiller
             if($topic->getVerouillage() == 0){
                 $lockStatut= ""; 
-                $action="<p><a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."'>Vérouiller</a></p>";
+                $action="<p><a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-lock'></i> Lock</a></p>";
             } else {
                 $lockStatut = "<i class='fa-solid fa-lock'></i>";
-                $action="<p><a href='index.php?ctrl=forum&action=unlockTopic&id=".$topic->getId()."'>Déverouiller</a></p>";
+                $action="<p><a href='index.php?ctrl=forum&action=unlockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-unlock'></i>  Unlock</a></p>";
             }
             //verifie si le topic a été créé par l'utilisateur connecté ou un autre
             $userTopic=$topic->getUser()->getId();

@@ -42,14 +42,19 @@ $topicsUser=$result['data']['topicsUser'];
         if ($topicsUser){
             foreach($topicsUser as $topic){ 
                 //si le topic est verouillé
-                if($topic->getVerouillage() == 1){
-                    $lockStatut= "<i class='fa-solid fa-lock'></i>";
+                if($topic->getVerouillage() == 0){
+                    $lockStatut= "<a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."'><i class='fa-solid fa-lock'></i> Lock</a>";
                 } else {
-                    $lockStatut = "";
+                    $lockStatut = "<a href='index.php?ctrl=forum&action=unlockTopic&id=".$topic->getId()."'><i class='fa-solid fa-unlock'></i> Unlock</a>";
                 }
                 ?>
-                <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?=$topic." ".$lockStatut?></a></p>
-                
+                <div class="user-topic-main">
+                    <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?=$topic?></a></p>
+                </div>
+                <div class="user-topic-update">
+                    <p><a href="index.php?ctrl=forum&action=viewUpdateTopic&id=<?=$topic->getId()?>"><i class="fa-solid fa-pen"></i> Modify</a></p>
+                    <?=$lockStatut?>
+                </div>
             <?php
             }
         } else { ?>

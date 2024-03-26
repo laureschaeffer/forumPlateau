@@ -92,7 +92,6 @@ abstract class Manager{
         SET ".implode(', ', $result)."
         WHERE id_".$this->tableName." = :id"; //where id_post, id_topic, ...
 
-        var_dump($sql); die;
             try{
                 return DAO::update($sql, ['id' => $id]);
             }

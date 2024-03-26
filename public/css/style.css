@@ -27,6 +27,19 @@
     font-family: var(--text-family);
 }
 
+textarea{
+    font-family: var(--text-family);
+    height: 150px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
+    margin: 25px 0;
+}
+
 .log-btn{
     background-color: #604958;
     padding: 5px 20px;
@@ -51,6 +64,7 @@ h2{
     background-color: var(--btn-color);
     border: none;
     color: var(--main-txt-color);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 15px 15px;
 }
 
 button{
@@ -116,15 +130,40 @@ nav a{
     padding: 10px 5px;
 }
 
+.categorie-main p{
+    font-size: 1.5em;
+}
+.categorie-update{
+    text-decoration: none;
+}
 
 /* -------------topics------------------------- */
+
 #topics a{
     color: var(--main-txt-color);
     font-size: var(--text-size);
 }
 
+#topics .btn-container{
+    margin-bottom: 25px;
+}
+
 .topic-listing p{
     padding: 10px 5px;
+}
+
+.topic-update{
+    text-decoration: none;
+}
+
+.post-gbt{
+    text-align: center;
+    color: var(--main-txt-color);
+    padding: 10px;
+}
+
+.post-gbt a{
+    color: var(--main-txt-color);
 }
 
 /* ------------------publications--------------- */
@@ -198,6 +237,14 @@ nav a{
     padding: 10px 0;
 }
 
+.user-topic-main p{
+    font-size: 1.5em;
+}
+
+.user-topic-update a{
+    text-decoration: none;
+}
+
 /* ----------formulaires---------- */
 
 form{
@@ -257,17 +304,30 @@ input{
 
 /* -------------------------modification---------------------- */
 
-.form-update-post input{
+/* post  */
+#form-update-post input{
     width: 300px;
 }
 
-/* .modifPost{
-    display: none;
+#form-update-post h3{
+    text-align: center;
+    margin: 20px;
 }
 
-.modificationOpen{
-    display: block;
-}  */
+
+#form-update-post .update-btn{
+    margin-bottom: 20px;
+}
+
+/* topic  */
+#form-update-topic h3{
+    text-align: center;
+    margin: 20px;
+}
+
+#form-update-topic .update-btn{
+    margin: 20px 0;
+}
 
 footer{
     text-align: center;

@@ -140,30 +140,75 @@ class ForumController extends AbstractController implements ControllerInterface{
             }
         }
     }
+
+    //ajout d'une categorie
+    public function addCategory(){
+        if(isset($_POST['submit'])){
+            //on filtre
+            $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            //si tout est bon on l'ajoute
+            if($name){
+                $categoryManager = new CategoryManager();
+                //tableau attendu en argument pour la fonction add
+                $dataPost = ['name' => $name];
+    
+                $categoryManager->add($dataPost);
+            }
+        }
+
+        $this->redirectTo("forum", "index"); exit;
+    }
     
     // ------------------------------------------------------actions en fonctions des roles -------------------------------------
 
+    //redirige vers le formulaire pour changer le nom d'un categorie: admin
+    public function viewUpdateCategory($id){
+        $categoryManager = new CategoryManager();
+
+        $categories = $categoryManager->findOneById($id);
+
+        return [
+            "view" => VIEW_DIR."update/modifCategory.php",
+            "meta_description" => "Update a category name",
+            "data" => [
+                "categories" => $categories
+            ]
+        ];
+    }
+
+    //change le nom en bdd
+    public function updateCategory($id){
+
+        if(isset($_POST['submit'])){
+            //on filtre
+            $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            //si tout est bon on l'ajoute dans la bdd
+            if($name){
+                $categoryManager = new CategoryManager();
+                //tableau associatif colonne à modifier et sa valeur, pour "SET name='...' " dans le manager
+                $data =["name"=> "'".$name."'"]; //rajoute des quotes car 'name' attend un string dans la bdd
+                $categoryManager->update($data, $id);
+            }
+
+        }
+
+        $this->redirectTo("forum", "index");
+
+    }
+
+
     //supprimer un post : admin ou propriétaire
-    public function deletePost($id){
-        // $this->restrictTo("ROLE_ADMIN");
-        
+    public function deletePost($id){        
         $postManager = new PostManager();
         $postManager->delete($id);
 
         $this->redirectTo("forum", "index"); exit;
     }
 
-    //modifier le nom d'une categorie
-    // public function changeCategory($id){
-    //     $categoryManager = new CategoryManager();
 
-    //     //recupere le nom ici
-    //     $data=[""];
-    //     //execute
-    //     $categoryManager->update($data, $id);
-    // }
-
-    //verouille un topic
+    //verouille un topic : admin ou proprietaire
     public function lockTopic($id){
         $topicManager = new TopicManager();
         //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
@@ -175,7 +220,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         $this->redirectTo("forum", "index"); exit;
     }
 
-    //deverouille un topic
+    //deverouille un topic: admin ou proprietaire
     public function unlockTopic($id){
         $topicManager = new TopicManager();
         //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
@@ -195,7 +240,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
         return [
             "view" => VIEW_DIR."update/modifPost.php",
-            "meta_description" => "Update your posts and topics",
+            "meta_description" => "Update your posts",
             "data" => [
                 "posts" => $posts
             ]
@@ -205,18 +250,58 @@ class ForumController extends AbstractController implements ControllerInterface{
     //change la valeur dans la bdd
     public function updatePost($id){
         if(isset($_POST['submit'])){
+            //on filtre
             $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
             
+            //si tout est bon on l'ajoute
             if($texte){
                 $postManager = new PostManager();
-                //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
-                $data =["texte"=>$texte];
+                //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
+                $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
                 //update attend les valeurs à modifier et l'id de l'endroit à modifier
                 $postManager->update($data, $id);
 
             }
         
         }
+
+        //quand tout est fini on redirige
+        $this->redirectTo("home", "profil"); exit;
+    }
+
+    //redirige vers le formulaire de modification d'un topic
+    public function viewUpdateTopic($id){
+        $topicManager = new TopicManager();
+        $topics = $topicManager->findOneById($id);
+
+        return [
+            "view" => VIEW_DIR."update/modifTopic.php",
+            "meta_description" => "Update your topics",
+            "data" => [
+                "topics" => $topics
+            ]
+        ];
+    }
+
+    //change la valeur dans la bdd
+    public function updateTopic($id){
+
+        if(isset($_POST['submit'])){
+            //on filtre
+            $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+            
+            //si tout est bon on l'ajoute
+            if($titre){
+                $topicManager = new TopicManager();
+        
+                //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
+                $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
+                $topicManager->update($data, $id);
+            }
+        }
+
+        //on redirige quand tout est fini
+        $this->redirectTo("home", "profil"); exit;
     }
 
 

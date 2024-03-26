@@ -39,5 +39,7 @@
     </div>
     <?php }
     ?>
-    <p>Go back to <a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?=$topics->getCategory()->getId()?>"><?=$category?></a> publications</p>
+    <div class="post-gbt">
+        <p>Go back to <a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?=$topics->getCategory()->getId()?>"><?=$category?></a> publications</p>
+    </div>
 </div>

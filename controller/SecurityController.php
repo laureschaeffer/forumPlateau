@@ -89,10 +89,10 @@ class SecurityController extends AbstractController{
                     if(password_verify($password, $hash)){
                         $_SESSION["user"] = $user; //stocke tout l'utilisateur en session
                     } else{
-                        $this->redirectTo("forum", "listCategories"); exit;
+                        $this->redirectTo("security", "viewLogin"); exit;
                     }
                 } else {
-                    $this->redirectTo("forum", "listPosts"); exit;
+                    $this->redirectTo("security", "viewLogin"); exit;
                 }
 
             }
