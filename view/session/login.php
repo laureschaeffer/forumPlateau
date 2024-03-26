@@ -11,5 +11,7 @@
         <input type="submit" name="submit" value="Log in">
     </form>
 
-    <p>No account yet? Sign up here</p>
-    <a href="index.php?ctrl=security&action=viewRegister">Create an account</a>
+    <div class="create-account">
+        <p>No account yet? Sign up here</p>
+        <a href="index.php?ctrl=security&action=viewRegister">Create an account</a>
+    </div>

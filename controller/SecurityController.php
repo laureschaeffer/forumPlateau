@@ -113,13 +113,4 @@ class SecurityController extends AbstractController{
         $this->redirectTo("home", "index"); exit;
     }
 
-    //affiche le profil
-    public function profil(){
-
-        return [
-            "view" => VIEW_DIR."profil.php",
-            "meta_description" => "My profil"
-        ];
-    }
-
 }

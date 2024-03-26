@@ -21,6 +21,7 @@
         } else {
             $user= $post->getUser(); 
             $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"; 
+            $supprimerPost= "";
         }
         ?>
     <div class="publication">

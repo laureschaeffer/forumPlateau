@@ -187,5 +187,37 @@ class ForumController extends AbstractController implements ControllerInterface{
         $this->redirectTo("forum", "index"); exit;
     }
 
+    //redirige vers le formulaire de modif des posts qu'un utilisateur a créé
+    public function viewUpdatePost($id){
+        //post avec l'id du post
+        $postManager = new PostManager();
+        $posts = $postManager->findOneById($id);
+
+        return [
+            "view" => VIEW_DIR."update/modifPost.php",
+            "meta_description" => "Update your posts and topics",
+            "data" => [
+                "posts" => $posts
+            ]
+        ];
+    }
+
+    //change la valeur dans la bdd
+    public function updatePost($id){
+        if(isset($_POST['submit'])){
+            $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+            
+            if($texte){
+                $postManager = new PostManager();
+                //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+                $data =["texte"=>$texte];
+                //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                $postManager->update($data, $id);
+
+            }
+        
+        }
+    }
+
 
 }

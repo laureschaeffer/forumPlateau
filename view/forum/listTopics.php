@@ -1,4 +1,4 @@
-<?php  //listes des sujets en lien avec une catégorie, avec l'utilisateur qui l'a créé
+<?php  //listes des sujets en lien avec une catégorie, avec l'utilisateur qui l'a créé et sa date
     $category = $result["data"]['category']; 
     $topics = $result["data"]['topics']; 
 
@@ -10,9 +10,9 @@
                 <?php
         foreach($topics as $topic ){ 
 
-            // si verouillage = 0 (pas verouillé) afficher le cadenas pour verouiller, sinon afficher qu'il est déjà verouillé ; action pour le lien plus bas
+            // si verouillage = 0 (pas verouillé) pas de cadenas, sinon afficher qu'il est verouillé ; action pour le lien plus bas pour vérouiller
             if($topic->getVerouillage() == 0){
-                $lockStatut= "<i class='fa-solid fa-unlock'></i>"; 
+                $lockStatut= ""; 
                 $action="<p><a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."'>Vérouiller</a></p>";
             } else {
                 $lockStatut = "<i class='fa-solid fa-lock'></i>";
@@ -23,10 +23,12 @@
             $userSession =$_SESSION['user']->getId();
             ($userTopic == $userSession ? $user = "you" : $user= $topic->getUser()); 
             //lien de la personne qui a créée, et pas de lien si c'est l'utilisateur
-            ($userTopic == $userSession ? $lien = $user : $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
+            ($userTopic == $userSession ? $lienUser = $user : $lienUser= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
             ?>
-
-            <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?> by <?=$lien?></a></p>
+            <div class="topic">
+                <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?></p>
+                <p>by <?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </p>
+            </div>
             <?php
             //si personne admin OU auteur du topic tu peux faire une action 
             if(App\Session::isAdmin() || $userTopic == $userSession){

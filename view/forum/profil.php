@@ -11,6 +11,8 @@ $topicsUser=$result['data']['topicsUser'];
     <div class="user-info">
         <p><?=$userInfos?></p>
         <p>Since <?=$userInfos->getDateInscription()->format('d-m-Y')?></p>
+        <!-- bouton pour update son profil sans changer de page, en lien avec la fonction javascript -->
+        <!-- <button class="modification">Change your profil</button> -->
     </div>
     <h3>Your publications</h3>
     <div class="user-post">
@@ -23,6 +25,8 @@ $topicsUser=$result['data']['topicsUser'];
                 </div>
                 <div class="user-post-main">
                     <p><?=$post?></p>
+                    <p><a href="index.php?ctrl=forum&action=viewUpdatePost&id=<?=$post->getId()?>">Change your post</a></p>
+                    
                 </div>
                 <hr />
                 <?php

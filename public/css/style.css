@@ -155,6 +155,9 @@ nav a{
 
 
 /* ------------------------------------user info--------------------- */
+#user h3{
+    text-align: center;
+}
 
 .user-info{
     display: flex;
@@ -184,12 +187,23 @@ nav a{
     margin-top: 10px;
 }
 
+.user-topics{
+    text-align: center;
+}
+
+.user-topics a{
+    color: var(--main-txt-color);
+}
+.user-topics p{
+    padding: 10px 0;
+}
 
 /* ----------formulaires---------- */
 
 form{
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 #titre, #texte{
@@ -211,7 +225,49 @@ form{
     color: var(--main-txt-color);
 }
 
+form input[type=submit]{
+    background-color: var(--btn-color);
+    padding: 5px 20px;
+    border-radius: var(--border-size);
+    border: none;
+}
 
+input{
+    border: none;
+    outline: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+/* lien créer un compte depuis login */
+.create-account{
+    text-align: center;
+    margin: 25px 0;
+}
+
+.create-account a{
+    color: var(--main-txt-color);
+}
+
+/* ------------register */
+#register input[type=submit]{
+    margin: 15px;
+}
+
+
+/* -------------------------modification---------------------- */
+
+.form-update-post input{
+    width: 300px;
+}
+
+/* .modifPost{
+    display: none;
+}
+
+.modificationOpen{
+    display: block;
+}  */
 
 footer{
     text-align: center;
