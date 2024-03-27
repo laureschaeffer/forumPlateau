@@ -72,10 +72,6 @@ button{
     cursor: pointer;
 }
 
-button:hover{
-    opacity: 0.5;
-}
-
 i{
     color: var(--main-txt-color);
 }
@@ -88,6 +84,19 @@ i{
 
 .line{
     width: 50vw;
+}
+
+/* hover  */
+
+button:hover{
+    opacity: 0.5;
+}
+
+a:hover{
+    opacity: 0.5;
+}
+a{
+    transition: 1s;
 }
 
 /* ---------------------------------------------------------homepage----------------------------- */
@@ -128,6 +137,10 @@ nav a{
 
 #categories p{
     padding: 10px 5px;
+}
+
+#categories .btn-container{
+    margin-bottom: 25px;
 }
 
 .categorie-main p{

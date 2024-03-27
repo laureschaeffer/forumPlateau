@@ -12,7 +12,9 @@ namespace App;
  */
 abstract class DAO{
 
-    private static $host   = 'mysql:host=127.0.0.1;port=3306';
+    private static $host   = 'mysql:host=host.docker.internal;port=3307';
+    //chemin pour docker
+    // private static $host   = 'mysql:host=127.0.0.1;port=3306';
     private static $dbname = 'forum_laure';
     private static $dbuser = 'root';
     private static $dbpass = '';

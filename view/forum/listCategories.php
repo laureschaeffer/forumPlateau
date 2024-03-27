@@ -23,7 +23,7 @@ foreach($categories as $category ){ ?>
         <h2>Create a new category</h2>
         <form action="index.php?ctrl=forum&action=addCategory" method="post">
             <label for="name"></label>
-            <input type="text" name="name" id="name" placeholder="Name" require><br>
+            <input type="text" name="name" id="name" placeholder="Name" required><br>
 
             <div class="btn-container">
                 <button class="btn" type="submit" name="submit">Create</button>

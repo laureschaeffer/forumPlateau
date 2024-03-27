@@ -1,6 +1,7 @@
 <?php
 namespace Controller;
 
+use App\Session;
 use App\AbstractController;
 use App\ControllerInterface;
 use Model\Managers\UserManager;
@@ -20,7 +21,7 @@ class SecurityController extends AbstractController{
     //créer un compte
     public function register () {
         $userManager = new UserManager;
-        if($_POST["submit"]){
+        if(isset($_POST["submit"])){
 
             //filtre les champs
             $email= filter_input(INPUT_POST, "email", FILTER_SANITIZE_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
@@ -38,17 +39,32 @@ class SecurityController extends AbstractController{
                 
                 //renvoie true si existe
                 if(!$userMail && !$userPseudo){
+                    // Valide la qualité du mdp
+                    $uppercase = preg_match('@[A-Z]@', $pass1); //une majuscule
+                    $lowercase = preg_match('@[a-z]@', $pass1); //une minuscule
+                    $number    = preg_match('@[0-9]@', $pass1); //un nombre
+                    $specialChars = preg_match('@[^\w]@', $pass1); //un caractere special
 
-                    //verifier que les 2 mdp sont identiques et longueur>12 (recommandation de la cnil)
-                    if($pass1 == $pass2 && strlen($pass1 >=12)){
-                        //tableau attendu en argument pour la fonction add
-                        $data = ['email' => $email, 'pseudo' => $pseudo, 'motdePasse' => password_hash($pass1, PASSWORD_DEFAULT)];
-                        $userManager->add($data);
+                    //si ces conditions ne sont pas remplies
+                    if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($pass1) < 11) {
+                        Session::addFlash("error", "Password should be at least 12 characters in length and should include at least one upper case letter, one number, and one special character");
+                    } else { //si le mdp valide on verifie que les 2 mdp correspondent
+                        if($pass1 == $pass2){
+                            //tableau attendu en argument pour la fonction add
+                            $data = ['email' => $email, 'pseudo' => $pseudo, 'motdePasse' => password_hash($pass1, PASSWORD_DEFAULT)];
+                            $userManager->add($data);
+                        } else {
+                            Session::addFlash("error", "Passwords don't match");
+                            $this->redirectTo("security", "viewRegister");
+                        }
                     }
-
+                    //si le mail ou le pseudo existe déjà en bdd
+                } else {
+                    //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
+                    Session::addFlash("error", "Nickname or email already existing");
+                    $this->redirectTo("security", "viewRegister");
                 }
                         
-
             } 
         }
 
@@ -71,7 +87,7 @@ class SecurityController extends AbstractController{
     public function login () {
         $userManager = new UserManager;
 
-        if($_POST["submit"]){
+        if(isset($_POST['submit'])){
             //on filtre
             $email= filter_input(INPUT_POST, "email", FILTER_SANITIZE_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
             $password= filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
@@ -89,9 +105,13 @@ class SecurityController extends AbstractController{
                     if(password_verify($password, $hash)){
                         $_SESSION["user"] = $user; //stocke tout l'utilisateur en session
                     } else{
+                        //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
+                        Session::addFlash("error", "Invalid credentials");
                         $this->redirectTo("security", "viewLogin"); exit;
                     }
                 } else {
+                    //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
+                    Session::addFlash("error", "Invalid credentials");
                     $this->redirectTo("security", "viewLogin"); exit;
                 }
 
@@ -112,5 +132,10 @@ class SecurityController extends AbstractController{
 
         $this->redirectTo("home", "index"); exit;
     }
+
+    //suppression du compte de l'utilisateur
+    // public function deleteUser($id){
+
+    // }
 
 }

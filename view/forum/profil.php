@@ -61,6 +61,8 @@ $topicsUser=$result['data']['topicsUser'];
             <p>No topics created yet</p>
         <?php }
         ?>
+        <h4>Delete your account</h4>
+        <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
     </div>
 
 

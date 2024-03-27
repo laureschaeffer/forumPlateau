@@ -40,14 +40,19 @@ class ForumController extends AbstractController implements ControllerInterface{
         $category = $categoryManager->findOneById($id);
         $topics = $topicManager->findTopicsByCategory($id);
 
-        return [
-            "view" => VIEW_DIR."forum/listTopics.php",
-            "meta_description" => "Liste des topics par catégorie : ".$category,
-            "data" => [
-                "category" => $category,
-                "topics" => $topics
-            ]
-        ];
+        //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
+        if($category){
+            return [
+                "view" => VIEW_DIR."forum/listTopics.php",
+                "meta_description" => "Liste des topics par catégorie : ".$category,
+                "data" => [
+                    "category" => $category,
+                    "topics" => $topics
+                ]
+            ];
+        } else {
+            $this->redirectTo("forum", "index"); exit; 
+        }
     }
 
 
@@ -59,17 +64,22 @@ class ForumController extends AbstractController implements ControllerInterface{
         $topics = $topicManager->findOneById($id);
 
         $postManager = new PostManager();
-
         $posts = $postManager->findPostsByTopic($id);
 
-        return [
-            "view" => VIEW_DIR."forum/listPosts.php",
-            "meta_description" => "Liste des postes du topic",
-            "data" => [
-                "posts" => $posts,
-                "topics" => $topics
-            ]
-        ];
+        //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
+        if($topics){
+            return [
+                "view" => VIEW_DIR."forum/listPosts.php",
+                "meta_description" => "Liste des postes du topic",
+                "data" => [
+                    "posts" => $posts,
+                    "topics" => $topics
+                ]
+            ];
+        } else {
+            $this->redirectTo("forum", "index"); exit; 
+        }
+
     }
 
 
@@ -83,19 +93,24 @@ class ForumController extends AbstractController implements ControllerInterface{
         $postManager = new PostManager();
         $postsUser = $postManager->findPostsByUser($id);
 
+        //pour ne pas avoir d'erreur si l'user tape dans l'url id=100
+        if($userInfos){
+            return [
+                "view" => VIEW_DIR."forum/userInfo.php",
+                "meta_description" => "Detail d'un utilisateur",
+                "data" => [
+                    "userInfos" => $userInfos,
+                    "postsUser" => $postsUser
+                ]
+            ];
+        } else {
+            $this->redirectTo("forum", "index"); exit;
+        }
 
-        return [
-            "view" => VIEW_DIR."forum/userInfo.php",
-            "meta_description" => "Detail d'un utilisateur",
-            "data" => [
-                "userInfos" => $userInfos,
-                "postsUser" => $postsUser
-            ]
-        ];
     }
 
     //formulaire ajout d'un topic avec ajout d'une publication sur ce topic, id de category
-    public function formTopic($id){
+    public function addTopic($id){
         
         // dabord on filtre 
         if(isset($_POST['submit'])){
@@ -128,15 +143,37 @@ class ForumController extends AbstractController implements ControllerInterface{
     
                     $postManager->add($dataPost);
     
+
                     //si tout est bon
+                    Session::addFlash("success", "Topic well created");
                     $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
     
                 } else {
                     //ici message d'erreur 
-
+                    Session::addFlash("error", "This topic already exist");
                     //redirection
                     $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
                 }
+            }
+        }
+    }
+
+    //formulaire d'ajout d'un post dans un topic déjà existant
+    public function addPost($id){
+        if(isset($_POST['submit'])){
+            //d'abord on filtre
+            $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+
+            if($texte){
+                $idUser = Session::getUser()->getId(); //id de l'user qui a créé le post
+                //tableau attendu en argument pour la fonction add
+                $data = ['texte' => $texte, 'topic_id' => $id, 'user_id'=>$idUser];
+                $postManager = new PostManager();
+                $postManager->add($data);
+
+                //quand tout est bon
+                Session::addFlash("success", "Post added");
+                $this->redirectTo("forum", "listPostsByTopic&id=$id"); exit;
             }
         }
     }
@@ -164,6 +201,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //redirige vers le formulaire pour changer le nom d'un categorie: admin
     public function viewUpdateCategory($id){
+        $this->restrictTo("ROLE_ADMIN");
         $categoryManager = new CategoryManager();
 
         $categories = $categoryManager->findOneById($id);
@@ -179,6 +217,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //change le nom en bdd
     public function updateCategory($id){
+        $this->restrictTo("ROLE_ADMIN");
 
         if(isset($_POST['submit'])){
             //on filtre
@@ -204,7 +243,17 @@ class ForumController extends AbstractController implements ControllerInterface{
         $postManager = new PostManager();
         $postManager->delete($id);
 
+        Session::addFlash("success", "Post deleted");
         $this->redirectTo("forum", "index"); exit;
+    }
+
+    //supprimer un topic: seulement admin
+    public function deleteTopic($id){
+        $topicManager = new TopicManager();
+        $topicManager->delete($id);
+
+        Session::addFlash("success", "Topic deleted");
+        $this->redirectTo("forum", "index");
     }
 
 

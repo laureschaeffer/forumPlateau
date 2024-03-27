@@ -9,6 +9,7 @@
 
 <div id="publications">
 <?php
+if($posts){
     foreach($posts as $post ){ 
         //verifie si le topic a été créé par l'utilisateur connecté ou un autre
         $userTopic=$post->getUser()->getId();
@@ -38,8 +39,22 @@
         <hr class="line"/>
     </div>
     <?php }
+    } else {
+        echo "<p>No posts yet</p>";
+    }
     ?>
     <div class="post-gbt">
         <p>Go back to <a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?=$topics->getCategory()->getId()?>"><?=$category?></a> publications</p>
+    </div>
+    <!-- ajoute un post  -->
+    <div class="post-form">
+        <h2>Add a post </h3>
+        <form action="index.php?ctrl=forum&action=addPost&id=<?=$topics->getId()?>" method="post" >
+            <label for="texte"></label>
+            <textarea name="texte" id="texte" placeholder="Your message" required></textarea>
+            <div class="btn-container">
+                <button class="btn" type="submit" name="submit">Create</button>
+            </div>
+        </form>
     </div>
 </div>
