@@ -14,7 +14,7 @@
 
                     foreach($topics as $topic ){ 
         
-                    // si verouillage = 0 (pas verouillé) pas de cadenas, sinon afficher qu'il est verouillé ; action pour le lien plus bas pour vérouiller
+                        // si verouillage = 0 (pas verouillé) pas de cadenas, sinon afficher qu'il est verouillé ; action pour le lien plus bas pour vérouiller
                         if($topic->getVerouillage() == 0){
                             $lockStatut= ""; 
                             $action="<p><a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-lock'></i> Lock</a></p>";
@@ -22,16 +22,23 @@
                             $lockStatut = "<i class='fa-solid fa-lock'></i>";
                             $action="<p><a href='index.php?ctrl=forum&action=unlockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-unlock'></i>  Unlock</a></p>";
                         }
-                        //verifie si le topic a été créé par l'utilisateur connecté ou un autre
-                        $userTopic=$topic->getUser()->getId();
-                        $userSession =$_SESSION['user']->getId();
-                        ($userTopic == $userSession ? $user = "you" : $user= $topic->getUser()); 
-                        //lien de la personne qui a créée, et pas de lien si c'est l'utilisateur
-                        ($userTopic == $userSession ? $lienUser = $user : $lienUser= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
+                        //si on peut récupérer l'utilisateur qui a créé un topic (si la personne a supprimé son compte ça renvoie false)
+                        if($topic->getUser()){
+                            $userTopic=$topic->getUser()->getId();
+                            $userSession =$_SESSION['user']->getId();
+                            //verifie si le topic a été créé par l'utilisateur connecté
+                            $userTopic == $userSession ? $user = "<i>you</i>" : $user= $topic->getUser(); 
+                            //lien de la personne qui a créée, et pas de lien si c'est l'utilisateur
+                            ($userTopic == $userSession ? $lienUser = $user : $lienUser= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
+                        } else {
+                            $userTopic= "<i>anonyme</i>"; 
+                            $lienUser= "<i>anonyme</i>";
+                            $userSession="";
+                        }
                         ?>
                         <div class="topic">
                             <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?></p>
-                            <p>by <?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </p>
+                            <p>    -by <?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </p>
                         </div>
                         <?php
                         //si personne admin OU auteur du topic tu peux faire une action 

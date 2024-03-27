@@ -114,4 +114,10 @@ final class User extends Entity{
             return false;
         }
     }
+
+    //donne le role, pour les admin
+    public function getRoleUser(){
+        $roles = explode("_", $this->role);
+        return strtolower($roles[1]);
+    }
 }

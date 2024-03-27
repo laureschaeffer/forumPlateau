@@ -26,8 +26,8 @@
                             <?php
                                 // si l'utilisateur est connecté 
                                 if(App\Session::getUser()){ ?>
-                                    <a href="index.php?ctrl=security&action=logout" class="log-btn">Log out</a>
                                     <a href="index.php?ctrl=home&action=profil"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
+                                    <a href="index.php?ctrl=security&action=logout" class="log-btn">Log out</a>
                                     <?php
                             } else { ?>
                                     <a href="index.php?ctrl=security&action=viewLogin" class="log-btn">Login</a>

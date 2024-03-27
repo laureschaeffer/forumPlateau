@@ -239,7 +239,9 @@ class ForumController extends AbstractController implements ControllerInterface{
 
 
     //supprimer un post : admin ou propriétaire
-    public function deletePost($id){        
+    public function deletePost($id){    
+        $this->restrictTo("ROLE_ADMIN");   
+
         $postManager = new PostManager();
         $postManager->delete($id);
 
@@ -249,6 +251,8 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //supprimer un topic: seulement admin
     public function deleteTopic($id){
+        $this->restrictTo("ROLE_ADMIN"); 
+
         $topicManager = new TopicManager();
         $topicManager->delete($id);
 
@@ -259,6 +263,8 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //verouille un topic : admin ou proprietaire
     public function lockTopic($id){
+        $this->restrictTo("ROLE_ADMIN"); 
+
         $topicManager = new TopicManager();
         //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
         $data =["verouillage"=>1];
@@ -271,6 +277,8 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //deverouille un topic: admin ou proprietaire
     public function unlockTopic($id){
+        $this->restrictTo("ROLE_ADMIN"); 
+
         $topicManager = new TopicManager();
         //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
         $data =["verouillage"=>0];

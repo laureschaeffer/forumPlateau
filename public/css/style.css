@@ -72,9 +72,7 @@ button{
     cursor: pointer;
 }
 
-i{
-    color: var(--main-txt-color);
-}
+
 
 .line-break{
     display: flex;
@@ -205,6 +203,26 @@ nav a{
     font-weight: bolder;
 }
 
+#publications .btn-container{
+    margin: 25px 0;
+}
+
+/* --------------- users------------------  */
+
+.user{
+    background-color: var(--publication-bg-color);
+    border-radius: var(--border-size);
+    padding: 20px;
+    margin: 10px;
+}
+
+.user a{
+    color: black;
+    font-size: 1.5em;
+}
+.user-role{
+    font-style: italic;
+}
 
 /* ------------------------------------user info--------------------- */
 #user h3{

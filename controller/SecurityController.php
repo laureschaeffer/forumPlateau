@@ -133,9 +133,42 @@ class SecurityController extends AbstractController{
         $this->redirectTo("home", "index"); exit;
     }
 
-    //suppression du compte de l'utilisateur
-    // public function deleteUser($id){
+    //rend un utilisateur admin
+    public function upgradeAdmin($id){
+        $this->restrictTo("ROLE_ADMIN");
+        $userManager = new UserManager();
 
-    // }
+        //tableau associatif colonne à modifier et sa valeur, pour "SET role= '..' " dans le manager
+        $data =["role" => "'ROLE_ADMIN'"]; 
+        $userManager->update($data, $id);
+
+        Session::addFlash("sucess", "This user is now an admin");
+        $this->redirectTo("forum", "findOneUser", $id); exit;
+    }
+
+    //rend un admin simple utilisateur
+    public function upgradeUser($id){
+        $this->restrictTo("ROLE_ADMIN");
+        $userManager = new UserManager();
+
+        //tableau associatif colonne à modifier et sa valeur, pour "SET role= '..' " dans le manager
+        $data =["role" => "'ROLE_USER'"]; 
+        $userManager->update($data, $id);
+
+        Session::addFlash("sucess", "This admin is now an user");
+        $this->redirectTo("forum", "findOneUser", $id); exit;
+    }
+
+    //suppression du compte de l'utilisateur
+    public function deleteUser($id){
+
+        // $this->restrictTo("ROLE_ADMIN");
+        $userManager = new UserManager();
+        $userManager->delete($id);
+
+        Session::addFlash("success", "Profil deleted");
+        $this->logout();
+        $this->redirectTo("forum", "index"); exit;
+    }
 
 }
