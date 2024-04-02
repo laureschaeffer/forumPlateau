@@ -30,7 +30,10 @@
                                     <a href="index.php?ctrl=security&action=logout" class="log-btn">Log out</a>
                                     <?php
                             } else { ?>
-                                    <a href="index.php?ctrl=security&action=viewLogin" class="log-btn">Login</a>
+                                    <div class="home-session">
+                                        <a href="index.php?ctrl=security&action=viewLogin" class="log-btn">Login</a>
+                                        <a href="index.php?ctrl=security&action=viewRegister">Register</a>
+                                    </div>
                                     <?php
                             }
                             ?>     

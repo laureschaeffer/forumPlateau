@@ -97,12 +97,25 @@ a{
     transition: 1s;
 }
 
-/* ---------------------------------------------------------homepage----------------------------- */
+/* ---------------------------------------------------------layout----------------------------- */
 
 /* nav  */
 nav a{
     /* text-decoration: none; */
     color: var(--main-txt-color);
+}
+
+.home-session{
+    display: flex;
+    align-items: center;
+}
+
+.home-session a{
+    margin: 0 15px;
+}
+
+header{
+    margin-bottom: 25px;
 }
 
 #first-nav{
@@ -120,8 +133,15 @@ nav a{
     justify-content: space-evenly;
 }
 
+/* -------------------------------------------------home----------------------------------------------- */
+#home>p{
+    text-align: justify;
+    margin: 15px;
+}
 
-
+h1{
+    padding-left: 15px;
+}
 /* -------------------------------------------------------------------listes------------------------------------------------------------ */
 
 #publications, #categories, #topics{

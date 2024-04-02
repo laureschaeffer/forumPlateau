@@ -173,7 +173,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
                 //quand tout est bon
                 Session::addFlash("success", "Post added");
-                $this->redirectTo("forum", "listPostsByTopic&id=$id"); exit;
+                $this->redirectTo("forum", "listPostsByTopic", $id); exit;
             }
         }
     }
@@ -263,7 +263,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //verouille un topic : admin ou proprietaire
     public function lockTopic($id){
-        $this->restrictTo("ROLE_ADMIN"); 
+        // $this->restrictTo("ROLE_ADMIN"); 
 
         $topicManager = new TopicManager();
         //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
@@ -272,12 +272,13 @@ class ForumController extends AbstractController implements ControllerInterface{
         //update attend les valeurs à modifier et l'id de l'endroit à modifier
         $topicManager->update($data, $id);
 
-        $this->redirectTo("forum", "index"); exit;
+        Session::addFlash("success", "Topic locked");
+        $this->redirectTo("forum", "listPostsByTopic", $id); exit; //redirige vers le lien qui montrent les post du topic
     }
 
     //deverouille un topic: admin ou proprietaire
     public function unlockTopic($id){
-        $this->restrictTo("ROLE_ADMIN"); 
+        // $this->restrictTo("ROLE_ADMIN"); 
 
         $topicManager = new TopicManager();
         //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
@@ -286,7 +287,8 @@ class ForumController extends AbstractController implements ControllerInterface{
         //update attend les valeurs à modifier et l'id de l'endroit à modifier
         $topicManager->update($data, $id);
 
-        $this->redirectTo("forum", "index"); exit;
+        Session::addFlash("success", "Topic unlocked");
+        $this->redirectTo("forum", "listPostsByTopic", $id); exit;
     }
 
     //redirige vers le formulaire de modif des posts qu'un utilisateur a créé
@@ -307,6 +309,7 @@ class ForumController extends AbstractController implements ControllerInterface{
     //change la valeur dans la bdd
     public function updatePost($id){
         if(isset($_POST['submit'])){
+
             //on filtre
             $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
             
@@ -317,13 +320,15 @@ class ForumController extends AbstractController implements ControllerInterface{
                 $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
                 //update attend les valeurs à modifier et l'id de l'endroit à modifier
                 $postManager->update($data, $id);
-
+                
             }
-        
+            
         }
-
-        //quand tout est fini on redirige
-        $this->redirectTo("home", "profil"); exit;
+        
+        Session::addFlash("success", "Post updated");
+        //quand tout est fini on redirige vers la liste des post en fonction de l'id topic
+        $idTopic= self::viewUpdatePost($id)["data"]["posts"]->getTopic()->getId(); 
+        $this->redirectTo("forum", "listPostsByTopic", $idTopic); exit;
     }
 
     //redirige vers le formulaire de modification d'un topic
@@ -342,7 +347,6 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //change la valeur dans la bdd
     public function updateTopic($id){
-
         if(isset($_POST['submit'])){
             //on filtre
             $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
@@ -357,8 +361,10 @@ class ForumController extends AbstractController implements ControllerInterface{
             }
         }
 
-        //on redirige quand tout est fini
-        $this->redirectTo("home", "profil"); exit;
+        //on redirige à la liste des topics en fonction de l'id de la categorie
+        Session::addFlash("success", "Topic name updated");
+        $idCat= self::viewUpdateTopic($id)["data"]["topics"]->getCategory()->getId();
+        $this->redirectTo("forum", "listTopicsByCategory", $idCat); exit;
     }
 
 

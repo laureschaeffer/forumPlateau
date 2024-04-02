@@ -11,9 +11,7 @@
                 <?php
                 //si des topics de la categorie existe
                 if($topics) {
-
-                    foreach($topics as $topic ){ 
-        
+                    foreach($topics as $topic){                         
                         // si verouillage = 0 (pas verouillé) pas de cadenas, sinon afficher qu'il est verouillé ; action pour le lien plus bas pour vérouiller
                         if($topic->getVerouillage() == 0){
                             $lockStatut= ""; 
@@ -44,6 +42,7 @@
                         //si personne admin OU auteur du topic tu peux faire une action 
                         if(App\Session::isAdmin() || $userTopic == $userSession){
                             echo $action;
+                            echo "<a href='index.php?ctrl=forum&action=viewUpdateTopic&id=".$topic->getId()."'><i class='fa-solid fa-pen'></i> Modify</a>";
                         } 
                         //seulement un admin peut supprimer un topic
                         if(App\Session::isAdmin()){ ?>
