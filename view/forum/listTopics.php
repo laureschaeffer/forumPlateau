@@ -15,35 +15,45 @@
                         // si verouillage = 0 (pas verouillé) pas de cadenas, sinon afficher qu'il est verouillé ; action pour le lien plus bas pour vérouiller
                         if($topic->getVerouillage() == 0){
                             $lockStatut= ""; 
-                            $action="<p><a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-lock'></i> Lock</a></p>";
+                            $action="<a href='index.php?ctrl=forum&action=lockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-lock'></i> Lock</a>";
                         } else {
                             $lockStatut = "<i class='fa-solid fa-lock'></i>";
-                            $action="<p><a href='index.php?ctrl=forum&action=unlockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-unlock'></i>  Unlock</a></p>";
+                            $action="<a href='index.php?ctrl=forum&action=unlockTopic&id=".$topic->getId()."' class='topic-update'><i class='fa-solid fa-unlock'></i>  Unlock</a>";
                         }
                         //si on peut récupérer l'utilisateur qui a créé un topic (si la personne a supprimé son compte ça renvoie false)
                         if($topic->getUser()){
                             $userTopic=$topic->getUser()->getId();
                             $userSession =$_SESSION['user']->getId();
                             //verifie si le topic a été créé par l'utilisateur connecté
-                            $userTopic == $userSession ? $user = "<i>you</i>" : $user= $topic->getUser(); 
+                            if($userTopic == $userSession){
+                                $user = "<span class='author'>you</span>";
+                                $lienUser = $user;
+                            } else {
+                                $user= $topic->getUser(); 
+                                $lienUser= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>";
+                            }
                             //lien de la personne qui a créée, et pas de lien si c'est l'utilisateur
-                            ($userTopic == $userSession ? $lienUser = $user : $lienUser= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"); 
                         } else {
-                            $userTopic= "<i>anonyme</i>"; 
-                            $lienUser= "<i>anonyme</i>";
+                            $userTopic= "<span class='author'>anonyme</span>"; 
+                            $lienUser= "<span class='author'>anonyme
+                            ";
                             $userSession="";
                         }
                         ?>
                         <div class="topic">
-                            <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?></p>
-                            <p>    -by <?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </p>
+                            <p class="topic-title"><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?></p>
+                            <p>    -by <span class='author'><?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </span></p>
+                            <?php
+                            //si personne admin OU auteur du topic tu peux faire une action 
+                            if(App\Session::isAdmin() || $userTopic == $userSession){ ?>
+                            <div class="topic-update">
+                                <p><?=$action?><a href='index.php?ctrl=forum&action=viewUpdateTopic&id=".$topic->getId()."'><i class='fa-solid fa-pen'></i> Modify</a></p>
+                            </div>
+                            <?php
+                        } 
+                        ?>
                         </div>
                         <?php
-                        //si personne admin OU auteur du topic tu peux faire une action 
-                        if(App\Session::isAdmin() || $userTopic == $userSession){
-                            echo $action;
-                            echo "<a href='index.php?ctrl=forum&action=viewUpdateTopic&id=".$topic->getId()."'><i class='fa-solid fa-pen'></i> Modify</a>";
-                        } 
                         //seulement un admin peut supprimer un topic
                         if(App\Session::isAdmin()){ ?>
                             <p><a href="index.php?ctrl=forum&action=deleteTopic&id=<?=$topic->getId()?>" class='topic-update'><i class="fa-solid fa-trash"></i> Delete</a></p>
@@ -75,7 +85,7 @@
         </div>
 <?php
     } else {
-        echo "<p>Login or create an account to see the topics</p>";
+        echo "<p>Login or create an account to see topics.</p>";
     }
 
     

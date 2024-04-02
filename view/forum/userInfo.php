@@ -13,8 +13,10 @@ $postsUser=$result['data']['postsUser'];
         //si la personne connectée est admin, et que le profil ne l'est pas, on peut changer le statut de l'utilisateur
         if(App\Session::isAdmin() && ($userInfos->getRole() === "ROLE_USER")){
             $lienRole="<a href='index.php?ctrl=security&action=upgradeAdmin&id=".$userInfos->getId()."'>Make them admin</a>";
-        } elseif(App\Session::isAdmin() && ($userInfos->getRole() === "ROLE_ADMIN")) {
+        } elseif(App\Session::isAdmin() && ($userInfos->getRole() === "ROLE_ADMIN")) { //si on est admin et qu'on rend l'admin user
             $lienRole="<a href='index.php?ctrl=security&action=upgradeUser&id=".$userInfos->getId()."'>Make them simple user</a>";
+        } else { //juste connaitre le role
+            $lienRole= "";
         }
         ?>
         <p><?=$lienRole?></p>

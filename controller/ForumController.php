@@ -24,7 +24,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         // le controller communique avec la vue "listCategories" (view) pour lui envoyer la liste des catégories (data)
         return [
             "view" => VIEW_DIR."forum/listCategories.php",
-            "meta_description" => "Liste des catégories du forum",
+            "meta_description" => "List of forum categories",
             "data" => [
                 "categories" => $categories
             ]
@@ -44,7 +44,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         if($category){
             return [
                 "view" => VIEW_DIR."forum/listTopics.php",
-                "meta_description" => "Liste des topics par catégorie : ".$category,
+                "meta_description" => "List of topics by category : ".$category,
                 "data" => [
                     "category" => $category,
                     "topics" => $topics
@@ -70,7 +70,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         if($topics){
             return [
                 "view" => VIEW_DIR."forum/listPosts.php",
-                "meta_description" => "Liste des postes du topic",
+                "meta_description" => "List of posts by topic :" .$topics,
                 "data" => [
                     "posts" => $posts,
                     "topics" => $topics
@@ -180,6 +180,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //ajout d'une categorie
     public function addCategory(){
+        $this->restrictTo("ROLE_ADMIN"); 
         if(isset($_POST['submit'])){
             //on filtre
             $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -194,6 +195,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             }
         }
 
+        Session::addFlash("success", "Category well created");
         $this->redirectTo("forum", "index"); exit;
     }
     
@@ -239,7 +241,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
 
     //supprimer un post : admin ou propriétaire
-    public function deletePost($id){    
+    public function deletePost($id){   
         $this->restrictTo("ROLE_ADMIN");   
 
         $postManager = new PostManager();

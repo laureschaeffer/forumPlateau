@@ -48,13 +48,14 @@ class SecurityController extends AbstractController{
                     //si ces conditions ne sont pas remplies
                     if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($pass1) < 11) {
                         Session::addFlash("error", "Password should be at least 12 characters in length and should include at least one upper case letter, one number, and one special character");
+                        $this->redirectTo("security", "viewRegister");
                     } else { //si le mdp valide on verifie que les 2 mdp correspondent
                         if($pass1 == $pass2){
                             //tableau attendu en argument pour la fonction add
                             $data = ['email' => $email, 'pseudo' => $pseudo, 'motdePasse' => password_hash($pass1, PASSWORD_DEFAULT)];
                             $userManager->add($data);
                         } else {
-                            Session::addFlash("error", "Passwords don't match");
+                            Session::addFlash("error", "Passwords don't match") ;
                             $this->redirectTo("security", "viewRegister");
                         }
                     }

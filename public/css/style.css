@@ -170,9 +170,21 @@ h1{
 
 /* -------------topics------------------------- */
 
-#topics a{
+.topic-title a{
+    font-size: xx-large;
     color: var(--main-txt-color);
-    font-size: var(--text-size);
+}
+
+.author{
+    font-style: italic;
+}
+
+.author a{
+    color: var(--main-txt-color);
+}
+
+.topic-update a{
+    color: #000;
 }
 
 #topics .btn-container{

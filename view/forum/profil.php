@@ -4,9 +4,11 @@ $userInfos= $result['data']['userInfos'];
 $postsUser=$result['data']['postsUser'];
 $topicsUser=$result['data']['topicsUser'];
 
+// echo App\Session::createUrlSlug('this is the example demo page');
 ?>
 
 <div id="user">
+    
     <h2>Your profil</h2>
     <div class="user-info">
         <p><?=$userInfos?></p>
@@ -62,6 +64,7 @@ $topicsUser=$result['data']['topicsUser'];
         <?php }
         ?>
         <h4>Delete your account</h4>
+        <!-- ne pas mettre en visible l'id utilisateur, je le recupere dans le manager -->
         <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
     </div>
 

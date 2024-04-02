@@ -32,7 +32,7 @@ class TopicManager extends Manager{
 
     //cherche le titre d'un topic, pour le formulaire d'ajout
     public function findTopicTitle($titre){
-        $sql = "SELECT * FROM topic WHERE titre = :titre";
+        $sql = "SELECT * FROM topic t WHERE t.titre = :titre";
 
         return $this->getOneOrNullResult(
             DAO::select($sql, ['titre' => $titre], false), $this->className
@@ -42,8 +42,8 @@ class TopicManager extends Manager{
 
     //topic par utilisateur
     public function findTopicsUser($id){
-        $sql = "SELECT * from ".$this->tableName." 
-        WHERE user_id = :id";
+        $sql = "SELECT * from ".$this->tableName." a
+        WHERE a.user_id = :id";
 
         return $this->getMultipleResults(
             DAO::select($sql, ['id' => $id]),

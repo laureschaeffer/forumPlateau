@@ -1,6 +1,5 @@
-<?php
+<?php //controller frontal
 namespace App;
-
 
 define('DS', DIRECTORY_SEPARATOR); // le caractère séparateur de dossier (/ ou \)
 // meilleure portabilité sur les différents systêmes.
