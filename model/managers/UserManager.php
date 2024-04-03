@@ -36,6 +36,22 @@ class UserManager extends Manager{
 
     }
 
+    //utilisateurs les plus actifs
+    public function findTop3Users(){
+        //selectionne toutes les infos d'un utilisateur et compte les topic d'un utilisateur, depuis la table topic
+        $sql ="SELECT u.*, COUNT(t.id_topic) AS nbPost
+        FROM topic t
+        INNER JOIN user u ON t.user_id = u.id_user
+        GROUP BY u.id_user
+        ORDER BY nbPost DESC
+        LIMIT 3";
+
+        return $this->getMultipleResults(
+            DAO::select($sql), 
+            $this->className
+        );
+    }
+
 
 
 }

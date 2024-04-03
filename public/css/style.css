@@ -12,9 +12,10 @@
     --border-size: 25px;
 
     --main-txt-color: #fff; 
+    --scd-txt-color: #453750;
     --publication-bg-color: #B1AFC6;
     /* --main-bg-color: linear-gradient(#604958, #837ea7); */
-    --main-bg-color: linear-gradient( #837ea7, #604958);
+    --main-bg-color: linear-gradient( #A89ED1, #604958);
     --btn-color: #B2675E;
 }
 
@@ -142,6 +143,24 @@ header{
 h1{
     padding-left: 15px;
 }
+
+/* top topic  */
+
+.top-topic-header p{
+    /* color: var(--scd-txt-color); */
+    font-weight: bolder;
+}
+
+.top-topic-title a{
+    font-size: var(--title-size);
+    color: var(--main-txt-color)
+}
+
+.top-author{
+    color: var(--scd-txt-color);
+    font-weight: bolder;
+}
+
 /* -------------------------------------------------------------------listes------------------------------------------------------------ */
 
 #publications, #categories, #topics{

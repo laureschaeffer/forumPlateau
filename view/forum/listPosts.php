@@ -12,7 +12,6 @@
 if(App\Session::getUser()){ //si l'utilisateur est connecté
     if($posts){ //si des posts existent
         foreach($posts as $post ){ 
-            var_dump(App\Session::getUser()); die;
             //si j'arrive à récupérer un utilisateur, sinon il a été supprimé
             if($post->getUser()){
                 //verifie si le topic a été créé par l'utilisateur connecté ou un autre

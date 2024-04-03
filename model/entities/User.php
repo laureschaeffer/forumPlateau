@@ -15,6 +15,7 @@ final class User extends Entity{
     private $motDePasse;
     private $dateInscription;
     private $role;
+    private $nbPost; //recupere le count dans la requete du manager, cette colonne n'existe pas dans la bdd
 
     public function __construct($data){         
         $this->hydrate($data);        
@@ -101,7 +102,19 @@ final class User extends Entity{
         return $this;
     }
 
-    
+    public function getNbPost()
+    {
+        return $this->nbPost;
+    }
+
+
+    public function setNbPost($nbPost)
+    {
+        $this->nbPost = $nbPost;
+
+        return $this;
+    }
+
     public function __toString() {
         return $this->pseudo;
     }
@@ -120,4 +133,6 @@ final class User extends Entity{
         $roles = explode("_", $this->role);
         return strtolower($roles[1]);
     }
+
+
 }

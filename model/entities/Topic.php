@@ -15,6 +15,7 @@ final class Topic extends Entity{
     private $verouillage;
     private $category;
     private $user;
+    private $nbPost; //recupere le count dans la requete du manager, cette colonne n'existe pas dans la bdd
 
     public function __construct($data){         
         $this->hydrate($data);        
@@ -98,8 +99,22 @@ final class Topic extends Entity{
         return $this;
     }
 
+    public function getNbPost()
+    {
+        return $this->nbPost;
+    }
+
+
+    public function setNbPost($nbPost)
+    {
+        $this->nbPost = $nbPost;
+
+        return $this;
+    }
+
     public function __toString(){
         return $this->titre;
     }
+
 
 }

@@ -97,7 +97,7 @@ class ForumController extends AbstractController implements ControllerInterface{
         if($userInfos){
             return [
                 "view" => VIEW_DIR."forum/userInfo.php",
-                "meta_description" => "Detail d'un utilisateur",
+                "meta_description" => "User informations",
                 "data" => [
                     "userInfos" => $userInfos,
                     "postsUser" => $postsUser
@@ -234,7 +234,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             }
 
         }
-
+        Session::addFlash("success", "Category name updated");
         $this->redirectTo("forum", "index");
 
     }
@@ -242,7 +242,7 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //supprimer un post : admin ou propriétaire
     public function deletePost($id){   
-        $this->restrictTo("ROLE_ADMIN");   
+        // $this->restrictTo("ROLE_ADMIN");   
 
         $postManager = new PostManager();
         $postManager->delete($id);

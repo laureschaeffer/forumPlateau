@@ -51,4 +51,20 @@ class TopicManager extends Manager{
         );
     }
 
+    //trouve les 3 topics qui contiennent le plus de post
+    public function findTop3Topics(){
+        //selectionne toutes les infos d'un topic et compte les posts d'un topic, depuis la table post
+        $sql = "SELECT t.* , COUNT(p.id_post) AS nbPost
+        FROM TOPIC t
+        INNER JOIN POST p ON t.id_topic = p.topic_id
+        GROUP BY t.id_topic
+        ORDER BY nbPost DESC
+        LIMIT 3" ;
+
+        return $this->getMultipleResults(
+            DAO::select($sql), 
+            $this->className
+        );
+    }
+
 }
