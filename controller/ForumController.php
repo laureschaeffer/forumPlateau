@@ -161,19 +161,23 @@ class ForumController extends AbstractController implements ControllerInterface{
     //formulaire d'ajout d'un post dans un topic déjà existant
     public function addPost($id){
         if(isset($_POST['submit'])){
-            //d'abord on filtre
-            $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+            if(Session::getUser()){ //si l'utilisateur est toujours connecté
+                //d'abord on filtre
+                $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-            if($texte){
-                $idUser = Session::getUser()->getId(); //id de l'user qui a créé le post
-                //tableau attendu en argument pour la fonction add
-                $data = ['texte' => $texte, 'topic_id' => $id, 'user_id'=>$idUser];
-                $postManager = new PostManager();
-                $postManager->add($data);
+                if($texte){
+                    $idUser = Session::getUser()->getId(); //id de l'user qui a créé le post
+                    //tableau attendu en argument pour la fonction add
+                    $data = ['texte' => $texte, 'topic_id' => $id, 'user_id'=>$idUser];
+                    $postManager = new PostManager();
+                    $postManager->add($data);
 
-                //quand tout est bon
-                Session::addFlash("success", "Post added");
-                $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+                    //quand tout est bon
+                    Session::addFlash("success", "Post added");
+                    $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+                }   
+            } else {
+                $this->redirectTo("security", "index"); exit;            
             }
         }
     }
@@ -182,16 +186,20 @@ class ForumController extends AbstractController implements ControllerInterface{
     public function addCategory(){
         $this->restrictTo("ROLE_ADMIN"); 
         if(isset($_POST['submit'])){
-            //on filtre
-            $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-            //si tout est bon on l'ajoute
-            if($name){
-                $categoryManager = new CategoryManager();
-                //tableau attendu en argument pour la fonction add
-                $dataPost = ['name' => $name];
+            if(Session::getUser()) { // si l'utilisateur est toujours connectée
+                //on filtre
+                $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     
-                $categoryManager->add($dataPost);
+                //si tout est bon on l'ajoute
+                if($name){
+                    $categoryManager = new CategoryManager();
+                    //tableau attendu en argument pour la fonction add
+                    $dataPost = ['name' => $name];
+        
+                    $categoryManager->add($dataPost);
+                }        
+            } else {
+                $this->redirectTo("security", "index"); exit;      
             }
         }
 
@@ -222,15 +230,19 @@ class ForumController extends AbstractController implements ControllerInterface{
         $this->restrictTo("ROLE_ADMIN");
 
         if(isset($_POST['submit'])){
-            //on filtre
-            $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-            //si tout est bon on l'ajoute dans la bdd
-            if($name){
-                $categoryManager = new CategoryManager();
-                //tableau associatif colonne à modifier et sa valeur, pour "SET name='...' " dans le manager
-                $data =["name"=> "'".$name."'"]; //rajoute des quotes car 'name' attend un string dans la bdd
-                $categoryManager->update($data, $id);
+            if(Session::getUser()){ //si l'utilisateur est toujours connecté
+                //on filtre
+                $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    
+                //si tout est bon on l'ajoute dans la bdd
+                if($name){
+                    $categoryManager = new CategoryManager();
+                    //tableau associatif colonne à modifier et sa valeur, pour "SET name='...' " dans le manager
+                    $data =["name"=> "'".$name."'"]; //rajoute des quotes car 'name' attend un string dans la bdd
+                    $categoryManager->update($data, $id);
+                }
+            } else {
+                $this->redirectTo("security", "index"); exit;      
             }
 
         }
@@ -311,20 +323,22 @@ class ForumController extends AbstractController implements ControllerInterface{
     //change la valeur dans la bdd
     public function updatePost($id){
         if(isset($_POST['submit'])){
-
-            //on filtre
-            $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-            
-            //si tout est bon on l'ajoute
-            if($texte){
-                $postManager = new PostManager();
-                //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
-                $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
-                //update attend les valeurs à modifier et l'id de l'endroit à modifier
-                $postManager->update($data, $id);
+            if(Session::getUser()){ //si l'utilisateur est toujours connecté
+                //on filtre
+                $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
                 
+                //si tout est bon on l'ajoute
+                if($texte){
+                    $postManager = new PostManager();
+                    //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
+                    $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
+                    //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                    $postManager->update($data, $id);
+                    
+                }
+            } else {
+                $this->redirectTo("security", "index"); exit;      
             }
-            
         }
         
         Session::addFlash("success", "Post updated");
@@ -350,16 +364,20 @@ class ForumController extends AbstractController implements ControllerInterface{
     //change la valeur dans la bdd
     public function updateTopic($id){
         if(isset($_POST['submit'])){
-            //on filtre
-            $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+            if(Session::getUser()){ //si l'utilisateur est toujours connecté 
+                //on filtre
+                $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+                
+                //si tout est bon on l'ajoute
+                if($titre){
+                    $topicManager = new TopicManager();
             
-            //si tout est bon on l'ajoute
-            if($titre){
-                $topicManager = new TopicManager();
-        
-                //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
-                $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
-                $topicManager->update($data, $id);
+                    //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
+                    $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
+                    $topicManager->update($data, $id);
+                }
+            } else {
+                $this->redirectTo("security", "index"); exit;      
             }
         }
 

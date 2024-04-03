@@ -120,10 +120,7 @@ class SecurityController extends AbstractController{
 
         }
 
-        return [
-            "view" => VIEW_DIR."home.php",
-            "meta_description" => "Login"
-        ];
+        $this->redirectTo("index", "home");
     }
 
 
