@@ -12,8 +12,8 @@
         Embrace the spirit of camaraderie, curiosity, and collaboration as we embark on this journey together. Welcome aboard!</p>
     </section>
 
+    <h2>Top topics</h2>
     <section id="home-top-topic">
-        <h2>Top topics</h2>
     <?php
     //selection des topics qui ont le plus de posts, visibles meme aux personnes non connectées
     
@@ -21,7 +21,8 @@
         ?>
     <div class="top-topic-card">
         <div class="top-topic-header">
-            <p class="top-topic-title"><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?=$topic->getTitre()?></a> in <?=$topic->getCategory()  ?></p>
+            <p class="top-topic-title"><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?=$topic->getTitre()?></a></p>
+            <p>In <a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $topic->getCategory()->getId() ?>" style="color: black"><?=strtolower($topic->getCategory()) ?></a></p>
             <p><?=$topic->getDateCreation()->format('d-m-Y H:i')?></p>
             <p>Has <?=$topic->getNbPost()?> posts</p>
         </div>
@@ -38,14 +39,16 @@
     }
     ?>
     </section>
-
+    
+    <h2>Top users</h2>
     <section id="home-top-user">
-        <h2>Top users</h2>
     <?php
     foreach($topUsers as $user){  ?>
+    <div class="top-user-card">
         <p><a href="index.php?ctrl=forum&action=findOneUser&id=<?=$user->getId()?>"><?=$user->getPseudo()?></a></p>
         <p>Since <?=$user->getDateInscription()->format('y')?></p>
         <p>Has posted : <?=$user->getNbPost()?> times</p>
+    </div>
         <?php 
       }
       ?>

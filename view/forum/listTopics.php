@@ -47,7 +47,7 @@
                             //si personne admin OU auteur du topic tu peux faire une action 
                             if(App\Session::isAdmin() || $userTopic == $userSession){ ?>
                             <div class="topic-update">
-                                <p><?=$action?><a href='index.php?ctrl=forum&action=viewUpdateTopic&id=".$topic->getId()."'><i class='fa-solid fa-pen'></i> Modify</a></p>
+                                <p><?=$action?><a href='index.php?ctrl=forum&action=viewUpdateTopic&id=<?=$topic->getId()?>'><i class='fa-solid fa-pen'></i> Modify</a></p>
                             </div>
                             <?php
                         } 

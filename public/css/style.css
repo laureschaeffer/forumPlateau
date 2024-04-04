@@ -135,7 +135,7 @@ header{
 }
 
 /* -------------------------------------------------home----------------------------------------------- */
-#home>p{
+#home-intro{
     text-align: justify;
     margin: 15px;
 }
@@ -146,20 +146,57 @@ h1{
 
 /* top topic  */
 
+#home-top-topic{
+    display: flex;
+    justify-content: space-around;
+    margin: 40px 0;
+}
+
+.top-topic-card, .top-user-card{
+    text-align: center;
+    border: 3px solid #8840c1;
+    padding: 15px;
+    border-radius: var(--border-size);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    transition: 0.5s;
+}
+
+
+
 .top-topic-header p{
-    /* color: var(--scd-txt-color); */
+    padding: 5px 0;
     font-weight: bolder;
 }
 
 .top-topic-title a{
     font-size: var(--title-size);
-    color: var(--main-txt-color)
+    color: #0A1633 ;
 }
 
 .top-author{
     color: var(--scd-txt-color);
     font-weight: bolder;
 }
+
+
+/* top user  */
+
+#home-top-user{
+    margin: 40px 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* effets visuels  */
+
+.top-topic-card:hover, .top-user-card:hover{
+    transform: translate(0, -15px);
+    backdrop-filter: blur(10px);
+}
+
 
 /* -------------------------------------------------------------------listes------------------------------------------------------------ */
 
