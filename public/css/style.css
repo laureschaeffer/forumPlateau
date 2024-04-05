@@ -190,6 +190,11 @@ h1{
     justify-content: space-around;
 }
 
+.top-user-card a{
+    color: black;
+    font-size: var(--title-size);
+}
+
 /* effets visuels  */
 
 .top-topic-card:hover, .top-user-card:hover{
@@ -241,6 +246,7 @@ h1{
 
 .topic-update a{
     color: #000;
+    text-decoration: none;
 }
 
 #topics .btn-container{
@@ -251,9 +257,6 @@ h1{
     padding: 10px 5px;
 }
 
-.topic-update{
-    text-decoration: none;
-}
 
 .post-gbt{
     text-align: center;
@@ -396,7 +399,10 @@ form input[type=submit]{
     padding: 5px 20px;
     border-radius: var(--border-size);
     border: none;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 15px 15px;
 }
+
 
 input{
     border: none;

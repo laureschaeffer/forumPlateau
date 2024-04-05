@@ -47,19 +47,14 @@ class Session{
     }
 
     //verifie si l'utilisateur connecté est l'auteur d'un topic/post, place="topic" ou "post"
-    public static function isAuthor($place){
-        if($place->getUser() && $_SESSION['user'] == $place->getUser()){ //si on retrouve un user (sinon la fonction crée une erreur)
-            return true; 
-        } else {
-            return false;
-        }
-    }
+    // public static function isAuthor($place){
+    //     if($place->getUser() && Session::getUser()->getId() == ){ //si on retrouve un user (sinon la fonction crée une erreur)
+    //         return true; 
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
-    //crée un url
-    public static function createUrlSlug($urlString){
-        $slug = preg_replace('/[^A-Za-z0-9-]+/', '-', $urlString);
-        return $slug;
-    }
 
 
 }

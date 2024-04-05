@@ -46,7 +46,7 @@
     foreach($topUsers as $user){  ?>
     <div class="top-user-card">
         <p><a href="index.php?ctrl=forum&action=findOneUser&id=<?=$user->getId()?>"><?=$user->getPseudo()?></a></p>
-        <p>Since <?=$user->getDateInscription()->format('y')?></p>
+        <p>Since <?=$user->getDateInscription()->format('Y')?></p>
         <p>Has posted : <?=$user->getNbPost()?> times</p>
     </div>
         <?php 

@@ -19,20 +19,20 @@ if(App\Session::getUser()){ //si l'utilisateur est connecté
                 $userSession =$_SESSION['user']->getId();
                 //si la personne connectée est la personne qui a publié le post
                 if($userTopic == $userSession){
-                    $user = "<i>you</i>";
+                    $user = "<span class='author'>you</span>";
                     $lien = $user; //pas de lien vers les infos d'une personne
                     $supprimerPost= "<a href='index.php?ctrl=forum&action=deletePost&id=".$post->getId()."'>Delete</a>"; //supprimer
                     $modifierPost= "<p><a href='index.php?ctrl=forum&action=viewUpdatePost&id=".$post->getId()."'>Change your post</a></p>"; //update
                 } else {
                     $user= $post->getUser(); 
-                    $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=".App\Session::getUser()->getId().">$user</a>"; 
+                    $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=".App\Session::getUser()->getId()." class='author'>$user</a>"; 
                     // $lien= "<a href=index.php?ctrl=forum&action=findOneUser&id=$userTopic>$user</a>"; 
                     $supprimerPost= "";
                     $modifierPost= "";
                 }
 
             } else {
-                $lien="<i>anonyme</i>";
+                $lien="<span class='author'>anonyme</span>";
                 $supprimerPost= "";
                 $modifierPost= "";
             }
@@ -50,7 +50,7 @@ if(App\Session::getUser()){ //si l'utilisateur est connecté
             </div>
         </div>
         <div class="line-break">
-            <hr class="line"/>
+            <hr class="line">
         </div>
         <?php }
         } else {

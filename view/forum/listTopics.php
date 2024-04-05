@@ -50,20 +50,22 @@
                                 <p><?=$action?><a href='index.php?ctrl=forum&action=viewUpdateTopic&id=<?=$topic->getId()?>'><i class='fa-solid fa-pen'></i> Modify</a></p>
                             </div>
                             <?php
-                        } 
-                        ?>
+                            } 
+                            //seulement un admin peut supprimer un topic
+                            if(App\Session::isAdmin()){ ?>
+                                <p><a href="index.php?ctrl=forum&action=deleteTopic&id=<?=$topic->getId()?>" class='topic-update' style="color: black"><i class="fa-solid fa-trash"></i> Delete</a></p>
+                            <?php 
+                            }
+                            ?>
                         </div>
                         <?php
-                        //seulement un admin peut supprimer un topic
-                        if(App\Session::isAdmin()){ ?>
-                            <p><a href="index.php?ctrl=forum&action=deleteTopic&id=<?=$topic->getId()?>" class='topic-update'><i class="fa-solid fa-trash"></i> Delete</a></p>
-                        <?php }
                     }
                 } else {
                     echo "<p>No topic for this category yet</p>";
                 }
                 ?>    
             </div>
+            <!-- <p><a href='index.php?ctrl=forum&action=unlockTopic&id=.$topic->getId()'></p> -->
             <div class="topic-form">
                 <h2>Create a new topic</h2>
                 <!-- ajoute un topic, avec son premier message, recupere l'id de la categorie de la page  -->

@@ -254,13 +254,23 @@ class ForumController extends AbstractController implements ControllerInterface{
 
     //supprimer un post : admin ou propriétaire
     public function deletePost($id){   
-        // $this->restrictTo("ROLE_ADMIN");   
-
         $postManager = new PostManager();
-        $postManager->delete($id);
+        $post= $postManager->findOneById($id);
+        
+        if($post && Session::getUser()){ //verifie que le post existe et que l'utilisateur est toujours connecté
 
-        Session::addFlash("success", "Post deleted");
-        $this->redirectTo("forum", "index"); exit;
+            //verifie que l'auteur du post existe encore, et si tu es l'auteur OU si tu es admin
+            if(($post->getUser() && $post->getUser() == Session::getUser()) || Session::isAdmin()){
+                $postManager->delete($id);
+        
+                Session::addFlash("success", "Post deleted");
+                $this->redirectTo("forum", "index"); exit;
+
+            } else {
+                $this->redirectTo("forum", "index"); exit;        
+            }
+        }
+
     }
 
     //supprimer un topic: seulement admin
@@ -268,41 +278,74 @@ class ForumController extends AbstractController implements ControllerInterface{
         $this->restrictTo("ROLE_ADMIN"); 
 
         $topicManager = new TopicManager();
-        $topicManager->delete($id);
+        $topic= $topicManager->findOneById($id);
 
-        Session::addFlash("success", "Topic deleted");
-        $this->redirectTo("forum", "index");
+        //si le topic existe et que l'utilisateur est connecté
+        if($topic && Session::getUser()){
+            $topicManager->delete($id);
+    
+            Session::addFlash("success", "Topic deleted");
+            $this->redirectTo("forum", "index");
+        } else {
+            $this->redirectTo("forum", "index"); exit; 
+        }
+        
+
     }
 
 
     //verouille un topic : admin ou proprietaire
     public function lockTopic($id){
-        // $this->restrictTo("ROLE_ADMIN"); 
-
         $topicManager = new TopicManager();
-        //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
-        $data =["verouillage"=>1];
+        $topic= $topicManager->findOneById($id);
 
-        //update attend les valeurs à modifier et l'id de l'endroit à modifier
-        $topicManager->update($data, $id);
+        if($topic && Session::getUser()){ //verifie que le topic existe et que l'utilisateur est connecté
+            
+            //verifie: si l'auteur du topic existe encore et si tu es l'auteur, OU si tu es admin
+            if(($topic->getUser() && $topic->getUser() == Session::getUser()) || Session::isAdmin()){
+                //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+                $data =["verouillage"=>1];
+        
+                //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                $topicManager->update($data, $id);
+        
+                Session::addFlash("success", "Topic locked");
+                $this->redirectTo("forum", "listPostsByTopic", $id); exit; //redirige vers le lien qui montrent les post du topic
 
-        Session::addFlash("success", "Topic locked");
-        $this->redirectTo("forum", "listPostsByTopic", $id); exit; //redirige vers le lien qui montrent les post du topic
+            } else {
+                $this->redirectTo("forum", "index"); exit;
+            }
+        
+        }
     }
 
     //deverouille un topic: admin ou proprietaire
     public function unlockTopic($id){
-        // $this->restrictTo("ROLE_ADMIN"); 
-
         $topicManager = new TopicManager();
-        //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
-        $data =["verouillage"=>0];
+        $topic = $topicManager->findOneById($id);
 
-        //update attend les valeurs à modifier et l'id de l'endroit à modifier
-        $topicManager->update($data, $id);
+        if($topic && Session::getUser()){ //verifie si le topic existe et que l'utilisateur est connecté 
 
-        Session::addFlash("success", "Topic unlocked");
-        $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+            //verifie : si l'auteur du topic existe encore, et si tu es l'auteur OU si tu es admin
+            if(($topic->getUser() && $topic->getUser() == Session::getUser()) || Session::isAdmin()){
+
+                //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+                $data =["verouillage"=>0];
+        
+                //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                $topicManager->update($data, $id);
+        
+                Session::addFlash("success", "Topic unlocked");
+                $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+
+                
+            } else {
+                $this->redirectTo("forum", "index"); exit;
+            }
+        } else {
+            $this->redirectTo("forum", "index"); exit;
+        }
+
     }
 
     //redirige vers le formulaire de modif des posts qu'un utilisateur a créé
@@ -311,40 +354,61 @@ class ForumController extends AbstractController implements ControllerInterface{
         $postManager = new PostManager();
         $posts = $postManager->findOneById($id);
 
-        return [
-            "view" => VIEW_DIR."update/modifPost.php",
-            "meta_description" => "Update your posts",
-            "data" => [
-                "posts" => $posts
-            ]
-        ];
+        if($posts && Session::getUser()){ //si le post existe et si l'utilisateur est toujours connectée
+
+            //verifie : si l'auteur du post existe encore et si tu en es l'auteur OU si tu es admin
+            if(($posts->getUser() && $posts->getUser() == Session::getUser()) || Session::isAdmin()){
+
+                return [
+                    "view" => VIEW_DIR."update/modifPost.php",
+                    "meta_description" => "Update your posts",
+                    "data" => [
+                        "posts" => $posts
+                    ]
+                ];
+
+            } else {
+                $this->redirectTo("forum", "index"); exit; 
+            }
+        } else {
+            $this->redirectTo("forum", "index"); exit; 
+        }
+
     }
 
     //change la valeur dans la bdd
     public function updatePost($id){
         if(isset($_POST['submit'])){
-            if(Session::getUser()){ //si l'utilisateur est toujours connecté
-                //on filtre
-                $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-                
-                //si tout est bon on l'ajoute
-                if($texte){
-                    $postManager = new PostManager();
-                    //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
-                    $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
-                    //update attend les valeurs à modifier et l'id de l'endroit à modifier
-                    $postManager->update($data, $id);
+            $postManager = new PostManager();
+            $posts = $postManager->findOneById($id);
+
+            if($posts && Session::getUser()){ //si le post existe et si l'utilisateur est toujours connectée
+                //verifie : si l'auteur du post existe encore et si tu en es l'auteur OU si tu es admin
+                if(($posts->getUser() && $posts->getUser() == Session::getUser()) || Session::isAdmin()){
+                    //on filtre
+                    $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
                     
+                    //si tout est bon on l'ajoute
+                    if($texte){
+                        //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
+                        $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
+                        //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                        $postManager->update($data, $id);
+                        
+                        Session::addFlash("success", "Post updated");
+                        //quand tout est fini on redirige vers la liste des post en fonction de l'id topic
+                        $idTopic= self::viewUpdatePost($id)["data"]["posts"]->getTopic()->getId(); 
+                        $this->redirectTo("forum", "listPostsByTopic", $idTopic); exit;
+                    }
+
+                } else {
+                    $this->redirectTo("forum", "index"); exit;      
                 }
+
             } else {
-                $this->redirectTo("security", "index"); exit;      
-            }
+                $this->redirectTo("forum", "index"); exit;
+            }    
         }
-        
-        Session::addFlash("success", "Post updated");
-        //quand tout est fini on redirige vers la liste des post en fonction de l'id topic
-        $idTopic= self::viewUpdatePost($id)["data"]["posts"]->getTopic()->getId(); 
-        $this->redirectTo("forum", "listPostsByTopic", $idTopic); exit;
     }
 
     //redirige vers le formulaire de modification d'un topic
@@ -352,39 +416,58 @@ class ForumController extends AbstractController implements ControllerInterface{
         $topicManager = new TopicManager();
         $topics = $topicManager->findOneById($id);
 
-        return [
-            "view" => VIEW_DIR."update/modifTopic.php",
-            "meta_description" => "Update your topics",
-            "data" => [
-                "topics" => $topics
-            ]
-        ];
+        if($topics && Session::getUser()){ //si le topic existe et si l'utilisateur est toujours connecté 
+
+            //si l'auteur du topic existe et si tu en es l'auteur OU si tu es admin
+            if(($topics->getUser() && $topics->getUser() == Session::getUser()) || Session::isAdmin()){
+                
+                return [
+                    "view" => VIEW_DIR."update/modifTopic.php",
+                    "meta_description" => "Update your topics",
+                    "data" => [
+                        "topics" => $topics
+                    ]
+                ];
+
+            } else {
+                $this->redirectTo("forum", "index"); exit;
+            }
+        
+        } else {
+            $this->redirectTo("forum", "index"); exit;
+        }
+
     }
 
     //change la valeur dans la bdd
     public function updateTopic($id){
         if(isset($_POST['submit'])){
-            if(Session::getUser()){ //si l'utilisateur est toujours connecté 
-                //on filtre
-                $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-                
-                //si tout est bon on l'ajoute
-                if($titre){
-                    $topicManager = new TopicManager();
+            $topicManager = new TopicManager();
+            $topics = $topicManager->findOneById($id);
+
+            if($topics && Session::getUser()){ //si le topic existe et si l'utilisateur est toujours connecté 
+
+                //si l'auteur du topic existe et si tu en es l'auteur OU si tu es admin
+                if(($topics->getUser() && $topics->getUser() == Session::getUser()) || Session::isAdmin()){
             
-                    //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
-                    $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
-                    $topicManager->update($data, $id);
+                    //on filtre
+                    $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+                
+                    //si tout est bon on l'ajoute
+                    if($titre){            
+                        //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
+                        $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
+                        $topicManager->update($data, $id);
+                        //on redirige à la liste des topics en fonction de l'id de la categorie
+                        Session::addFlash("success", "Topic name updated");
+                        $idCat= self::viewUpdateTopic($id)["data"]["topics"]->getCategory()->getId();
+                        $this->redirectTo("forum", "listTopicsByCategory", $idCat); exit;
+                    }
+                } else {
+                    $this->redirectTo("forum", "index"); exit;     
                 }
-            } else {
-                $this->redirectTo("security", "index"); exit;      
             }
         }
-
-        //on redirige à la liste des topics en fonction de l'id de la categorie
-        Session::addFlash("success", "Topic name updated");
-        $idCat= self::viewUpdateTopic($id)["data"]["topics"]->getCategory()->getId();
-        $this->redirectTo("forum", "listTopicsByCategory", $idCat); exit;
     }
 
 

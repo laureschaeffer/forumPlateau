@@ -32,7 +32,7 @@ if(App\Session::getUser()){ //si l'utilisateur est connecté ?>
                 </div>
             </div>
             <div class="line-break">
-                <hr class="line" />
+                <hr class="line">
             </div>
             <?php
             }

@@ -4,7 +4,6 @@ $userInfos= $result['data']['userInfos'];
 $postsUser=$result['data']['postsUser'];
 $topicsUser=$result['data']['topicsUser'];
 
-// echo App\Session::createUrlSlug('this is the example demo page');
 ?>
 
 <div id="user">
@@ -30,7 +29,7 @@ $topicsUser=$result['data']['topicsUser'];
                     <p><a href="index.php?ctrl=forum&action=viewUpdatePost&id=<?=$post->getId()?>">Change your post</a></p>
                     
                 </div>
-                <hr />
+                <hr>
                 <?php
             }
         } else { ?>
