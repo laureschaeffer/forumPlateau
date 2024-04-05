@@ -16,7 +16,7 @@
     --publication-bg-color: #B1AFC6;
     /* --main-bg-color: linear-gradient(#604958, #837ea7); */
     --main-bg-color: linear-gradient( #A89ED1, #604958);
-    --btn-color: #B2675E;
+    --btn-color: #BA7256;
 }
 
 /* -------------------------general----------------------------- */
@@ -64,7 +64,7 @@ h2{
     border-radius: var(--border-size);
     background-color: var(--btn-color);
     border: none;
-    color: var(--main-txt-color);
+    color: black;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 15px 15px;
 }
 
@@ -154,14 +154,14 @@ h1{
 
 .top-topic-card, .top-user-card{
     text-align: center;
-    border: 3px solid #8840c1;
+    /* border: 3px solid #8840c1; */
     padding: 15px;
     border-radius: var(--border-size);
     min-height: 150px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    transition: 0.5s;
+    flex: 1;
 }
 
 
@@ -193,13 +193,6 @@ h1{
 .top-user-card a{
     color: black;
     font-size: var(--title-size);
-}
-
-/* effets visuels  */
-
-.top-topic-card:hover, .top-user-card:hover{
-    transform: translate(0, -15px);
-    backdrop-filter: blur(10px);
 }
 
 
@@ -350,6 +343,7 @@ h1{
 
 .user-topics{
     text-align: center;
+    margin: 30px 0;
 }
 
 .user-topics a{
@@ -460,4 +454,14 @@ footer{
 
 footer p, footer a{
     color: var(--main-txt-color);
+}
+
+/* ===============================================================version mobile============================================================================= */
+
+@media screen and (max-width: 320px){
+
+    #home-top-topic{
+        flex-direction: column;
+    }
+
 }

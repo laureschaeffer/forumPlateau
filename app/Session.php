@@ -42,19 +42,10 @@ class Session{
         // attention de bien définir la méthode "hasRole" dans l'entité User en fonction de la façon dont sont gérés les rôles en base de données
         if(self::getUser() && self::getUser()->hasRole("ROLE_ADMIN")){
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
-
-    //verifie si l'utilisateur connecté est l'auteur d'un topic/post, place="topic" ou "post"
-    // public static function isAuthor($place){
-    //     if($place->getUser() && Session::getUser()->getId() == ){ //si on retrouve un user (sinon la fonction crée une erreur)
-    //         return true; 
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
 
 
 }

@@ -13,30 +13,35 @@ if(App\Session::getUser()){ //si l'utilisateur est connecté ?>
             //si la personne connectée est admin, et que le profil ne l'est pas, on peut changer le statut de l'utilisateur
             if(App\Session::isAdmin() && ($userInfos->getRole() === "ROLE_USER")){
                 $lienRole="<a href='index.php?ctrl=security&action=upgradeAdmin&id=".$userInfos->getId()."'>Make them admin</a>";
-            } elseif(App\Session::isAdmin() && ($userInfos->getRole() === "ROLE_ADMIN")) { //si on est admin et qu'on rend l'admin user
-                $lienRole="<a href='index.php?ctrl=security&action=upgradeUser&id=".$userInfos->getId()."'>Make them simple user</a>";
             } else { //juste connaitre le role
                 $lienRole= "";
             }
             ?>
             <p><?=$lienRole?></p>
         </div>
-        <?php foreach($postsUser as $post){ ?>
-            <div class="user-post">
-                <div class="user-post-header">
-                    <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$post->getTopic()->getId()?>"><?=$post->getTopic()?></a></p>
-                    <p><?=$post->getDateCreation()->format('d-m-Y H:i')?></p>
+        <?php 
+        if($postsUser){
+            
+            foreach($postsUser as $post){ ?>
+                <div class="user-post">
+                    <div class="user-post-header">
+                        <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$post->getTopic()->getId()?>"><?=$post->getTopic()?></a></p>
+                        <p><?=$post->getDateCreation()->format('d-m-Y H:i')?></p>
+                    </div>
+                    <div class="user-post-main">
+                        <p><?=$post?></p>
+                    </div>
                 </div>
-                <div class="user-post-main">
-                    <p><?=$post?></p>
+                <div class="line-break">
+                    <hr class="line">
                 </div>
-            </div>
-            <div class="line-break">
-                <hr class="line">
-            </div>
-            <?php
-            }
-            ?>
+                <?php
+                }
+
+        } else {
+            echo "<p>No posts yet</p>" ;
+        } 
+        ?>
     </div>
 <?php
 } else {

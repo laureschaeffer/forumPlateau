@@ -42,7 +42,16 @@
                         ?>
                         <div class="topic">
                             <p class="topic-title"><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?= $topic ?></a> <?=$lockStatut?></p>
-                            <p>    -by <span class='author'><?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </span></p>
+                            <?php
+                                //pour savoir si on met un s ou non
+                                if($topic->getNbPost() > 1){
+                                    $nbPost = $topic->getNbPost()." posts";
+                                } else {
+                                    $nbPost = $topic->getNbPost()." post";
+                                }
+                                ?>
+                            <p>-<?=$nbPost ?></p>
+                            <p>-by <span class='author'><?=$lienUser.", ".$topic->getDateCreation()->format('d-m-Y H:i')?> </span></p>
                             <?php
                             //si personne admin OU auteur du topic tu peux faire une action 
                             if(App\Session::isAdmin() || $userTopic == $userSession){ ?>

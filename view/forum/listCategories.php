@@ -6,9 +6,10 @@
 <section id="categories">
 
 <?php
-foreach($categories as $category ){ ?>
+foreach($categories as $category ){  ?>
     <div class="categorie-main">
         <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a></p>
+        <p>Has <?=$category->getNbTopic()?> topics </p>
     </div>
     <?php
     // si l'utilisateur est admin, possibilite de supprimer ou modifier 

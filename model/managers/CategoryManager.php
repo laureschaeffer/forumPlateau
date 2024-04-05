@@ -14,4 +14,18 @@ class CategoryManager extends Manager{
         parent::connect();
     }
 
+    //calcule le nb de topics d'une categorie
+    public function listCategories(){
+        $sql = "SELECT COUNT(t.id_topic) as nbTopic, c.*
+        FROM topic t
+        INNER JOIN category c on t.category_id = c.id_category
+        GROUP BY t.category_id
+        ORDER BY c.name" ;
+
+        return $this->getMultipleResults(
+            DAO::select($sql), 
+            $this->className
+        );
+    }
+
 }

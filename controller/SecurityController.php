@@ -150,28 +150,33 @@ class SecurityController extends AbstractController{
     }
 
     //rend un admin simple utilisateur
-    public function upgradeUser($id){
-        $this->restrictTo("ROLE_ADMIN");
-        $userManager = new UserManager();
+    // public function upgradeUser($id){
+    //     $this->restrictTo("ROLE_ADMIN");
+    //     $userManager = new UserManager();
 
-        //tableau associatif colonne à modifier et sa valeur, pour "SET role= '..' " dans le manager
-        $data =["role" => "'ROLE_USER'"]; 
-        $userManager->update($data, $id);
+    //     //tableau associatif colonne à modifier et sa valeur, pour "SET role= '..' " dans le manager
+    //     $data =["role" => "'ROLE_USER'"]; 
+    //     $userManager->update($data, $id);
 
-        Session::addFlash("sucess", "This admin is now an user");
-        $this->redirectTo("forum", "findOneUser", $id); exit;
-    }
+    //     Session::addFlash("sucess", "This admin is now an user");
+    //     $this->redirectTo("forum", "findOneUser", $id); exit;
+    // }
 
     //suppression du compte de l'utilisateur
     public function deleteUser($id){
-
-        // $this->restrictTo("ROLE_ADMIN");
         $userManager = new UserManager();
-        $userManager->delete($id);
+        $user= $userManager->findOneById($id);
 
-        Session::addFlash("success", "Profil deleted");
-        $this->logout();
-        $this->redirectTo("forum", "index"); exit;
+        if(Session::getUser() && $user && (Session::getUser() == $user)){ //si l'user est connecté et qu'il existe, et que c'est bien la personne connectée
+            $userManager->delete($id);
+    
+            Session::addFlash("success", "Profil deleted");
+            $this->logout();
+            $this->redirectTo("home", "index"); exit;
+
+        } else {
+            $this->redirectTo("home", "index"); exit;
+        }
     }
 
 }

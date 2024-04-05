@@ -15,14 +15,20 @@ class TopicManager extends Manager{
         parent::connect();
     }
 
-    // récupérer tous les topics d'une catégorie spécifique (par son id)
+    // récupérer tous les topics d'une catégorie spécifique (par son id) et le nb de posts dans ce topic
     public function findTopicsByCategory($id) {
 
-        $sql = "SELECT * 
-                FROM ".$this->tableName." t 
-                WHERE t.category_id = :id
-                ORDER BY t.dateCreation DESC";
+        // $sql = "SELECT * 
+        //         FROM ".$this->tableName." t 
+        //         WHERE t.category_id = :id
+        //         ORDER BY t.dateCreation DESC";
        
+        $sql = "SELECT t.* , COUNT(p.id_post) AS nbPost
+        FROM TOPIC t
+        INNER JOIN POST p ON t.id_topic = p.topic_id
+        where t.category_id = :id
+        GROUP BY t.id_topic " ;
+
         // la requête renvoie plusieurs enregistrements --> getMultipleResults
         return  $this->getMultipleResults(
             DAO::select($sql, ['id' => $id]), 

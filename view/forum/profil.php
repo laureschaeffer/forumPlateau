@@ -60,12 +60,11 @@ $topicsUser=$result['data']['topicsUser'];
             }
         } else { ?>
             <p>No topics created yet</p>
+    </div>
         <?php }
         ?>
-        <h4>Delete your account</h4>
-        <!-- ne pas mettre en visible l'id utilisateur, je le recupere dans le manager -->
-        <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
-    </div>
+    <h4>Delete your account</h4>
+    <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
 
 
 </div>

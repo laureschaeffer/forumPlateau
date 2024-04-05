@@ -19,7 +19,9 @@ class ForumController extends AbstractController implements ControllerInterface{
         // créer une nouvelle instance de CategoryManager
         $categoryManager = new CategoryManager();
         // récupérer la liste de toutes les catégories grâce à la méthode findAll de Manager.php (triés par nom)
-        $categories = $categoryManager->findAll(["name", "ASC"]);
+        // $categories = $categoryManager->findAll(["name", "ASC"]);
+
+        $categories = $categoryManager->listCategories();
 
         // le controller communique avec la vue "listCategories" (view) pour lui envoyer la liste des catégories (data)
         return [
@@ -27,6 +29,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             "meta_description" => "List of forum categories",
             "data" => [
                 "categories" => $categories
+                // "nbTopicsCat" => $nbTopicsCat
             ]
         ];
     }
@@ -269,6 +272,8 @@ class ForumController extends AbstractController implements ControllerInterface{
             } else {
                 $this->redirectTo("forum", "index"); exit;        
             }
+        } else {
+            $this->redirectTo("forum", "index"); exit; 
         }
 
     }
@@ -285,7 +290,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             $topicManager->delete($id);
     
             Session::addFlash("success", "Topic deleted");
-            $this->redirectTo("forum", "index");
+            $this->redirectTo("forum", "index"); exit;
         } else {
             $this->redirectTo("forum", "index"); exit; 
         }
@@ -315,7 +320,8 @@ class ForumController extends AbstractController implements ControllerInterface{
             } else {
                 $this->redirectTo("forum", "index"); exit;
             }
-        
+        } else {
+            $this->redirectTo("forum", "index"); exit; 
         }
     }
 

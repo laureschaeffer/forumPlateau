@@ -33,7 +33,7 @@
             $user= "anonyme";
         }
             ?>
-        <p> by <span class="top-author"><?=$user?></span></p>
+        <p> by <span class="author"><?=$user?></span></p>
     </div>
     <?php
     }

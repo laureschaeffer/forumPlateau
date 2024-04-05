@@ -11,6 +11,7 @@ final class Category extends Entity{
 
     private $id;
     private $name;
+    private $nbTopic; //recupere le count dans la requete du manager, cette colonne n'existe pas dans la bdd
 
     // chaque entité aura le même constructeur grâce à la méthode hydrate (issue de App\Entity)
     public function __construct($data){         
@@ -38,6 +39,16 @@ final class Category extends Entity{
 
     public function setName($name){
         $this->name = $name;
+        return $this;
+    }
+
+    public function getNbTopic(){
+        return $this->nbTopic;
+    }
+
+
+    public function setNbTopic($nbTopic){
+        $this->nbTopic = $nbTopic;
         return $this;
     }
 

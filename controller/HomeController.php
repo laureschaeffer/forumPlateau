@@ -38,6 +38,7 @@ class HomeController extends AbstractController implements ControllerInterface {
         $manager = new UserManager();
         $users = $manager->findAll(['dateInscription', 'DESC']);
 
+
         return [
             "view" => VIEW_DIR."forum/listUsers.php",
             "meta_description" => "Liste des utilisateurs du forum",
