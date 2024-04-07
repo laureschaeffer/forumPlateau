@@ -149,18 +149,33 @@ class SecurityController extends AbstractController{
         $this->redirectTo("forum", "findOneUser", $id); exit;
     }
 
-    //rend un admin simple utilisateur
-    // public function upgradeUser($id){
-    //     $this->restrictTo("ROLE_ADMIN");
-    //     $userManager = new UserManager();
+    //bannir un utilisateur
+    public function banUser($id){
+        $this->restrictTo("ROLE_ADMIN");
+        $userManager = new UserManager();
 
-    //     //tableau associatif colonne à modifier et sa valeur, pour "SET role= '..' " dans le manager
-    //     $data =["role" => "'ROLE_USER'"]; 
-    //     $userManager->update($data, $id);
+        //tableau associatif colonne à modifier et sa valeur, "SET ban=1"
+        $data = ["ban" => 1];
+        $userManager->update($data, $id);
 
-    //     Session::addFlash("sucess", "This admin is now an user");
-    //     $this->redirectTo("forum", "findOneUser", $id); exit;
-    // }
+        Session::addFlash("sucess", "This user is now banned");
+        $this->redirectTo("forum", "findOneUser", $id); exit;
+
+    }
+
+    //debannir un utilisateur
+    public function debanUser($id){
+        $this->restrictTo("ROLE_ADMIN");
+        $userManager = new UserManager();
+
+        //tableau associatif colonne à modifier et sa valeur, "SET ban=0"
+        $data = ["ban" => 0];
+        $userManager->update($data, $id);
+
+        Session::addFlash("sucess", "This user is not banned anymore");
+        $this->redirectTo("forum", "findOneUser", $id); exit;
+
+    }
 
     //suppression du compte de l'utilisateur
     public function deleteUser($id){
@@ -176,6 +191,7 @@ class SecurityController extends AbstractController{
 
         } else {
             $this->redirectTo("home", "index"); exit;
+            Session::addFlash("error", "You're not allowed to do this");
         }
     }
 

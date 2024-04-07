@@ -55,6 +55,8 @@ class ForumController extends AbstractController implements ControllerInterface{
             ];
         } else {
             $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "This category doesn't exist");
+            
         }
     }
 
@@ -81,6 +83,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             ];
         } else {
             $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "This topic doesn't exist");
         }
 
     }
@@ -108,6 +111,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             ];
         } else {
             $this->redirectTo("forum", "index"); exit;
+            Session::addFlash("error", "This user doesn't exist");
         }
 
     }
@@ -117,46 +121,52 @@ class ForumController extends AbstractController implements ControllerInterface{
         
         // dabord on filtre 
         if(isset($_POST['submit'])){
-            $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans topic
+            if(Session::getUser()){ //si l'user est toujours connecté
 
-            $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans post
-
-            
-            // pour l'instant sur id d'un user fixe
-            if ($titre && $texte){
-
-                // verifie que le titre du topic n'existe pas déjà 
-                $topicManager = new TopicManager();
-                $titreTopicBDD = $topicManager->findTopicTitle($titre);
+                $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans topic
     
-                //renvoie true si le titre existe
-                if(!$titreTopicBDD){
-                    $idUser = Session::getUser()->getId(); //id de l'user
-                    //tableau attendu en argument pour la fonction add
-                    $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
+                $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans post
     
-                    //recupere id du topic
-                    $idTopic= $topicManager->add($dataTopic);
+                
+                // pour l'instant sur id d'un user fixe
+                if ($titre && $texte){
     
-                    //ajoute post
-                    $postManager = new PostManager();
-
-                    //tableau attendu en argument pour la fonction add
-                    $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
+                    // verifie que le titre du topic n'existe pas déjà 
+                    $topicManager = new TopicManager();
+                    $titreTopicBDD = $topicManager->findTopicTitle($titre);
+        
+                    //renvoie true si le titre existe
+                    if(!$titreTopicBDD){
+                        $idUser = Session::getUser()->getId(); //id de l'user
+                        //tableau attendu en argument pour la fonction add
+                        $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
+        
+                        //recupere id du topic
+                        $idTopic= $topicManager->add($dataTopic);
+        
+                        //ajoute post
+                        $postManager = new PostManager();
     
-                    $postManager->add($dataPost);
+                        //tableau attendu en argument pour la fonction add
+                        $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
+        
+                        $postManager->add($dataPost);
+        
     
-
-                    //si tout est bon
-                    Session::addFlash("success", "Topic well created");
-                    $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
-    
-                } else {
-                    //ici message d'erreur 
-                    Session::addFlash("error", "This topic already exist");
-                    //redirection
-                    $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                        //si tout est bon
+                        Session::addFlash("success", "Topic well created");
+                        $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
+        
+                    } else {
+                        //ici message d'erreur 
+                        Session::addFlash("error", "This topic already exist");
+                        //redirection
+                        $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                    }
                 }
+            } else {
+                $this->redirectTo("home", "index"); exit;
+                Session::addFlash("error", "Login to add a topic");
             }
         }
     }
@@ -180,7 +190,8 @@ class ForumController extends AbstractController implements ControllerInterface{
                     $this->redirectTo("forum", "listPostsByTopic", $id); exit;
                 }   
             } else {
-                $this->redirectTo("security", "index"); exit;            
+                $this->redirectTo("security", "index"); exit;  
+                Session::addFlash("error", "Login to add a post");          
             }
         }
     }
@@ -202,7 +213,8 @@ class ForumController extends AbstractController implements ControllerInterface{
                     $categoryManager->add($dataPost);
                 }        
             } else {
-                $this->redirectTo("security", "index"); exit;      
+                $this->redirectTo("security", "index"); exit;  
+                Session::addFlash("error", "Login to add a category");    
             }
         }
 
@@ -245,7 +257,8 @@ class ForumController extends AbstractController implements ControllerInterface{
                     $categoryManager->update($data, $id);
                 }
             } else {
-                $this->redirectTo("security", "index"); exit;      
+                $this->redirectTo("security", "index"); exit;   
+                Session::addFlash("error", "Login to update a category");   
             }
 
         }
@@ -274,6 +287,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             }
         } else {
             $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "Login to delete this post, or check if it still exists");
         }
 
     }
@@ -293,6 +307,7 @@ class ForumController extends AbstractController implements ControllerInterface{
             $this->redirectTo("forum", "index"); exit;
         } else {
             $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "Login to delete this post, or check if it still exists");
         }
         
 
@@ -319,9 +334,11 @@ class ForumController extends AbstractController implements ControllerInterface{
 
             } else {
                 $this->redirectTo("forum", "index"); exit;
+                Session::addFlash("error", "You're not allowed do this action");
             }
         } else {
             $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "Login to lock this topic");
         }
     }
 
@@ -347,9 +364,11 @@ class ForumController extends AbstractController implements ControllerInterface{
                 
             } else {
                 $this->redirectTo("forum", "index"); exit;
+                Session::addFlash("error", "You're not allowed to do this action");
             }
         } else {
             $this->redirectTo("forum", "index"); exit;
+            Session::addFlash("error", "Login to unlock this topic");
         }
 
     }
@@ -375,9 +394,11 @@ class ForumController extends AbstractController implements ControllerInterface{
 
             } else {
                 $this->redirectTo("forum", "index"); exit; 
+                Session::addFlash("error", "You're not allowed to do this");
             }
         } else {
             $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "Login to update this post");
         }
 
     }
@@ -408,11 +429,13 @@ class ForumController extends AbstractController implements ControllerInterface{
                     }
 
                 } else {
-                    $this->redirectTo("forum", "index"); exit;      
+                    $this->redirectTo("forum", "index"); exit;    
+                    Session::addFlash("error", "You're not allowed to do this");  
                 }
 
             } else {
                 $this->redirectTo("forum", "index"); exit;
+                Session::addFlash("error", "Login to update this post");
             }    
         }
     }
@@ -437,10 +460,12 @@ class ForumController extends AbstractController implements ControllerInterface{
 
             } else {
                 $this->redirectTo("forum", "index"); exit;
+                Session::addFlash("error", "You're not allowed to do this action");
             }
         
         } else {
             $this->redirectTo("forum", "index"); exit;
+            Session::addFlash("error", "Login to update this topic");
         }
 
     }
@@ -470,8 +495,12 @@ class ForumController extends AbstractController implements ControllerInterface{
                         $this->redirectTo("forum", "listTopicsByCategory", $idCat); exit;
                     }
                 } else {
-                    $this->redirectTo("forum", "index"); exit;     
+                    $this->redirectTo("forum", "index"); exit;   
+                    Session::addFlash("error", "You're not allowed to do this");  
                 }
+            } else {
+                $this->redirectTo("home", "index"); exit
+                Session::addFlash("error", "Login to update this topic");
             }
         }
     }

@@ -14,6 +14,20 @@ class UserManager extends Manager{
         parent::connect();
     }
 
+    //nb posts d'un utilisateur, requete à part comme ça renvoie null s'il n'y a aucun post
+    public function findNbPostsUser($id){
+        $sql = "SELECT COUNT(t.id_topic) AS nbPost
+        FROM topic t
+        WHERE t.user_id= :id
+        GROUP BY t.user_id
+        ORDER BY nbPost DESC
+        ";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['id' =>$id]), $this->className
+        );
+    }
+
     //verifie qu'un utilisateur existe en BDD selon son email
     public function findOneByEmail($email){
         $sql = "SELECT *

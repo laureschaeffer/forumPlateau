@@ -13,11 +13,15 @@ if(App\Session::getUser()){ //si l'utilisateur est connecté ?>
             //si la personne connectée est admin, et que le profil ne l'est pas, on peut changer le statut de l'utilisateur
             if(App\Session::isAdmin() && ($userInfos->getRole() === "ROLE_USER")){
                 $lienRole="<a href='index.php?ctrl=security&action=upgradeAdmin&id=".$userInfos->getId()."'>Make them admin</a>";
+                $lienBannir =  "<a href='index.php?ctrl=security&action=banUser&id=".$userInfos->getId()."'>Ban this user</a>";
             } else { //juste connaitre le role
                 $lienRole= "";
+                $lienBannir= "";
             }
             ?>
             <p><?=$lienRole?></p>
+            <p><?=$lienBannir?></p>
+            <p>Has posted <?=$userInfos->getNbPost()?> times</p>
         </div>
         <?php 
         if($postsUser){
