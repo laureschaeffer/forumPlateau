@@ -21,32 +21,26 @@
                 <h3 class="message" style="color: green"><?= App\Session::getFlash("success") ?></h3>
                 <header>
                     <nav>
-                        <div id="first-nav">
-                            <a href="index.php?ctrl=home&action=index">Home</a>
+                        <a href="index.php?ctrl=home&action=index">Home</a>
+                        <a href="index.php?ctrl=forum&action=index">Categories</a>
+                        <?php
+                        //si administrateur: vue des users
+                        if(App\Session::isAdmin()){ ?>
+                        <a href="index.php?ctrl=home&action=listUsers">People</a>
+                        <?php }
+                        // si l'utilisateur est connecté 
+                        if(App\Session::getUser()){ ?>
+                            <a href="index.php?ctrl=home&action=profil"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
+                            <a href="index.php?ctrl=security&action=logout">Log out</a>
                             <?php
-                                // si l'utilisateur est connecté 
-                                if(App\Session::getUser()){ ?>
-                                    <a href="index.php?ctrl=home&action=profil"><span class="fas fa-user"></span>&nbsp;<?= App\Session::getUser()?></a>
-                                    <a href="index.php?ctrl=security&action=logout" class="log-btn">Log out</a>
-                                    <?php
-                            } else { ?>
-                                    <div class="home-session">
-                                        <a href="index.php?ctrl=security&action=viewLogin" class="log-btn">Login</a>
-                                        <a href="index.php?ctrl=security&action=viewRegister">Register</a>
-                                    </div>
-                                    <?php
+                        } else { ?>
+                        <div class="home-session">
+                            <a href="index.php?ctrl=security&action=viewLogin">Login</a>
+                            <a href="index.php?ctrl=security&action=viewRegister">Register</a>
+                        </div>
+                        <?php
                             }
-                            ?>     
-                        </div>
-                        <div id="second-nav">
-                            <a href="index.php?ctrl=forum&action=index">Categories</a>
-                            <?php
-                            //si administrateur: vue des users
-                            if(App\Session::isAdmin()){
-                                ?>
-                                <a href="index.php?ctrl=home&action=listUsers">People</a>
-                                <?php } ?>
-                        </div>
+                            ?>
                     </nav>
                 </header>
                 

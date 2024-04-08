@@ -11,15 +11,20 @@
 
     --border-size: 25px;
 
-    --main-txt-color: #fff; 
+    --main-txt-color: #000; 
     --scd-txt-color: #453750;
-    --publication-bg-color: #B1AFC6;
-    /* --main-bg-color: linear-gradient(#604958, #837ea7); */
-    --main-bg-color: linear-gradient( #A89ED1, #604958);
+    --publication-bg-color: #b1afc6a8;
+    /* --main-bg-color: radial-gradient(#604958, #837ea7); */
+    --main-bg-color: linear-gradient( #A89ED1, #EEABC4);
+    /* --main-bg-color: linear-gradient( #EEABC4,  #A89ED1); */
     --btn-color: #BA7256;
 }
 
 /* -------------------------general----------------------------- */
+
+/* .img{
+    filter: drop-shadow(0 0 48px #231527);
+} */
 
 #wrapper{
     background: var(--main-bg-color);
@@ -41,11 +46,6 @@ textarea{
     margin: 25px 0;
 }
 
-.log-btn{
-    background-color: #604958;
-    padding: 5px 20px;
-    border-radius: var(--border-size);
-}
 
 h2{
     text-align: center;
@@ -101,9 +101,19 @@ a{
 /* ---------------------------------------------------------layout----------------------------- */
 
 /* nav  */
+
+nav{
+    background-color: black;
+    opacity: 0.8;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 30px 0;
+}
+
 nav a{
-    /* text-decoration: none; */
-    color: var(--main-txt-color);
+    text-decoration: none;
+    color: white;
 }
 
 .home-session{
@@ -115,36 +125,30 @@ nav a{
     margin: 0 15px;
 }
 
-header{
-    margin-bottom: 25px;
-}
 
-#first-nav{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 10px 0;
-}
-#first-nav a{
-    text-decoration: none;
-}
-
-#second-nav{
-    display: flex;
-    justify-content: space-evenly;
-}
 
 /* -------------------------------------------------home----------------------------------------------- */
 
 
-
-#home-description{
-    text-align: justify;
-    margin: 15px;
+#home-intro{
+    background: url(../img/home-logo.png) center / cover no-repeat;
+    height: 500px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0px 0px 16px 18px #0000006b;
 }
 
-h1{
-    padding-left: 15px;
+#home-description p{
+    text-align: justify;
+    padding: 40px 15px;
+    font-size: 1.5rem;
+}
+
+#home-intro h1{
+    font-size: 3rem;
+    color: var(--main-txt-color);
 }
 
 /* top topic  */
@@ -218,7 +222,7 @@ h1{
     margin-bottom: 25px;
 }
 
-.categorie-main p{
+.categorie-title p{
     font-size: 1.5em;
 }
 .categorie-update{
@@ -341,7 +345,7 @@ h1{
 }
 
 .user-post-main{
-    margin-top: 10px;
+    margin: 10px 2px;
 }
 
 .user-topics{
@@ -374,9 +378,10 @@ form{
 
 #titre, #texte{
     background-color: transparent;
-    border: #b1afc6 solid;
+    border: #5e5897 solid;
     outline: none;
     border-radius: var(--border-size);
+    width: 50vw;
 }
 #titre{
     padding: 10px;
@@ -474,12 +479,31 @@ footer p, footer a{
     padding: 5px 0;
 }
 
+/* profil  */
+
+.user-post-main a{
+    color: #000;
+}
+
+.user-post-header p{
+    font-size: 1.5rem;
+    padding: 10px 0;
+}
+
+#user .line-break{
+    padding: 15px 0;
+}
+
 /* ===================================================version mobile======================================================================== */
 
-@media screen and (max-width: 320px){
+@media screen and (max-width: 430px){
 
     #home-top-topic{
         flex-direction: column;
+    }
+
+    #home-intro h1{
+        font-size: 1.5rem;
     }
 
 }

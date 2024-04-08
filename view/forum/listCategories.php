@@ -7,17 +7,20 @@
 
 <?php
 foreach($categories as $category ){  ?>
-    <div class="categorie-main">
-        <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a></p>
+    <div class="categorie-card">
+        <div class="categorie-title">
+            <p><a href="index.php?ctrl=forum&action=listTopicsByCategory&id=<?= $category->getId() ?>"><?= $category->getName() ?></a></p>
+        </div>
         <p>Has <?=$category->getNbTopic()?> topics </p>
+        <?php
+        // si l'utilisateur est admin, possibilite de supprimer ou modifier 
+        if(App\Session::isAdmin()){ ?>
+        <a href='index.php?ctrl=forum&action=viewUpdateCategory&id=<?=$category->getId()?>' class="categorie-update"><i class='fa-solid fa-pen'></i>Change</a>
+        <?php
+        } 
+    ?>
     </div>
-    <?php
-    // si l'utilisateur est admin, possibilite de supprimer ou modifier 
-    if(App\Session::isAdmin()){ ?>
-    <a href='index.php?ctrl=forum&action=viewUpdateCategory&id=<?=$category->getId()?>' class="categorie-update"><i class='fa-solid fa-pen'></i>Change</a>
-    <?php
-    } 
- }
+ <?php }
 
  if(App\Session::isAdmin()){ ?>
     <div class="category-form">

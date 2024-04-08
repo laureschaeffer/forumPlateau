@@ -41,15 +41,16 @@ $topicsUser=$result['data']['topicsUser'];
             foreach($postsUser as $post){ ?>
                 <div class="user-post-header">
                     <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$post->getTopic()->getId()?>"><?=$post->getTopic()?></a></p>
-                    <p><?=$post->getDateCreation()->format('d-m-Y H:i')?></p>
                 </div>
                 <div class="user-post-main">
+                    <p><?=$post->getDateCreation()->format('d-m-Y H:i')?></p>
                     <p><?=$post?></p>
                     <?php if($userInfos->getBan()==0){ ?>
-                        <p><a href="index.php?ctrl=forum&action=viewUpdatePost&id=<?=$post->getId()?>">Change your post</a></p>
+                        <p><a href="index.php?ctrl=forum&action=viewUpdatePost&id=<?=$post->getId()?>"><i class="fa-solid fa-pen"></i>Modify</a></p>
                         <?php
                     }
                     ?>
+                        <p><a href='index.php?ctrl=forum&action=deletePost&id=<?=$post->getId()?>'><i class="fa-solid fa-trash"></i>Delete</a></p>
                 </div>
                 <hr>
                 <?php
@@ -88,6 +89,9 @@ $topicsUser=$result['data']['topicsUser'];
     </div>
         <?php }
         ?>
+    <div class="line-break">
+        <hr class="line">
+    </div>
     <h4>Delete your account</h4>
     <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
 

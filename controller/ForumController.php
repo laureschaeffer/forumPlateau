@@ -38,26 +38,33 @@ class ForumController extends AbstractController implements ControllerInterface{
     //liste des topics en fonction d'une catégorie
     public function listTopicsByCategory($id) {
 
-        $topicManager = new TopicManager();
-        $categoryManager = new CategoryManager();
-        $category = $categoryManager->findOneById($id);
-        $topics = $topicManager->findTopicsByCategory($id);
+        if(Session::getUser()->getBan()==0){ //si l'user n'est pas ban
 
-        //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
-        if($category){
-            return [
-                "view" => VIEW_DIR."forum/listTopics.php",
-                "meta_description" => "List of topics by category : ".$category,
-                "data" => [
-                    "category" => $category,
-                    "topics" => $topics
-                ]
-            ];
+            $topicManager = new TopicManager();
+            $categoryManager = new CategoryManager();
+            $category = $categoryManager->findOneById($id);
+            $topics = $topicManager->findTopicsByCategory($id);
+    
+            //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
+            if($category){
+                return [
+                    "view" => VIEW_DIR."forum/listTopics.php",
+                    "meta_description" => "List of topics by category : ".$category,
+                    "data" => [
+                        "category" => $category,
+                        "topics" => $topics
+                    ]
+                ];
+            } else {
+                Session::addFlash("error", "This category doesn't exist");
+                $this->redirectTo("forum", "index"); exit; 
+                
+            }
         } else {
-            Session::addFlash("error", "This category doesn't exist");
-            $this->redirectTo("forum", "index"); exit; 
-            
+            Session::addFlash("error", "You're banned, you can't do this for now");
+                $this->redirectTo("forum", "index"); exit; 
         }
+
     }
 
 
