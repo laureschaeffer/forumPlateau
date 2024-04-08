@@ -1,5 +1,7 @@
 # Exercice forum
 
+Application d'un forum qui contient des catégories, des topics, plusieurs posts et utilisateurs. Possibilité de les vérouiller, modifier, supprimer, en fonction des autorisations (auteur ou admin)
+
 ## Preparation :
 - MCD sur looping
 - Maquettage sur figma en mockup

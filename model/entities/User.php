@@ -15,6 +15,7 @@ final class User extends Entity{
     private $motDePasse;
     private $dateInscription;
     private $role;
+    private $ban;
     private $nbPost; //recupere le count dans la requete du manager, cette colonne n'existe pas dans la bdd
 
     public function __construct($data){         
@@ -111,6 +112,19 @@ final class User extends Entity{
     public function setNbPost($nbPost)
     {
         $this->nbPost = $nbPost;
+
+        return $this;
+    }
+
+    public function getBan()
+    {
+        return $this->ban;
+    }
+
+
+    public function setBan($ban)
+    {
+        $this->ban = $ban;
 
         return $this;
     }

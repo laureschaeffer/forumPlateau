@@ -54,8 +54,8 @@ class ForumController extends AbstractController implements ControllerInterface{
                 ]
             ];
         } else {
-            $this->redirectTo("forum", "index"); exit; 
             Session::addFlash("error", "This category doesn't exist");
+            $this->redirectTo("forum", "index"); exit; 
             
         }
     }
@@ -73,17 +73,23 @@ class ForumController extends AbstractController implements ControllerInterface{
 
         //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
         if($topics){
-            return [
-                "view" => VIEW_DIR."forum/listPosts.php",
-                "meta_description" => "List of posts by topic :" .$topics,
-                "data" => [
-                    "posts" => $posts,
-                    "topics" => $topics
-                ]
-            ];
+            if(Session::getUser()->getBan()==0){
+                return [
+                    "view" => VIEW_DIR."forum/listPosts.php",
+                    "meta_description" => "List of posts by topic :" .$topics,
+                    "data" => [
+                        "posts" => $posts,
+                        "topics" => $topics
+                    ]
+                ];
+
+            } else {
+                Session::addFlash("error", "You're banned, you can't do this for now");
+                $this->redirectTo("forum", "index"); exit; 
+            }
         } else {
-            $this->redirectTo("forum", "index"); exit; 
             Session::addFlash("error", "This topic doesn't exist");
+            $this->redirectTo("forum", "index"); exit; 
         }
 
     }
@@ -101,17 +107,24 @@ class ForumController extends AbstractController implements ControllerInterface{
 
         //pour ne pas avoir d'erreur si l'user tape dans l'url id=100
         if($userInfos){
-            return [
-                "view" => VIEW_DIR."forum/userInfo.php",
-                "meta_description" => "User informations",
-                "data" => [
-                    "userInfos" => $userInfos,
-                    "postsUser" => $postsUser
-                ]
-            ];
+            if(Session::getUser()->getBan()==0){ //si l'utilisateur n'est pas ban
+
+                return [
+                    "view" => VIEW_DIR."forum/userInfo.php",
+                    "meta_description" => "User informations",
+                    "data" => [
+                        "userInfos" => $userInfos,
+                        "postsUser" => $postsUser
+                    ]
+                ];
+
+            } else {
+                Session::addFlash("error", "You're banned, you can't do this for now");
+                $this->redirectTo("forum", "index"); exit; 
+            }
         } else {
-            $this->redirectTo("forum", "index"); exit;
             Session::addFlash("error", "This user doesn't exist");
+            $this->redirectTo("forum", "index"); exit;
         }
 
     }
@@ -122,51 +135,59 @@ class ForumController extends AbstractController implements ControllerInterface{
         // dabord on filtre 
         if(isset($_POST['submit'])){
             if(Session::getUser()){ //si l'user est toujours connecté
-
-                $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans topic
-    
-                $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans post
-    
-                
-                // pour l'instant sur id d'un user fixe
-                if ($titre && $texte){
-    
-                    // verifie que le titre du topic n'existe pas déjà 
-                    $topicManager = new TopicManager();
-                    $titreTopicBDD = $topicManager->findTopicTitle($titre);
+                if(Session::getUser()->getBan()==0){
+                    $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans topic
         
-                    //renvoie true si le titre existe
-                    if(!$titreTopicBDD){
-                        $idUser = Session::getUser()->getId(); //id de l'user
-                        //tableau attendu en argument pour la fonction add
-                        $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
+                    $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); //dans post
         
-                        //recupere id du topic
-                        $idTopic= $topicManager->add($dataTopic);
+                    
+                    // pour l'instant sur id d'un user fixe
+                    if ($titre && $texte){
         
-                        //ajoute post
-                        $postManager = new PostManager();
-    
-                        //tableau attendu en argument pour la fonction add
-                        $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
+                        // verifie que le titre du topic n'existe pas déjà 
+                        $topicManager = new TopicManager();
+                        $titreTopicBDD = $topicManager->findTopicTitle($titre);
+            
+                        //renvoie true si le titre existe
+                        if(!$titreTopicBDD){
+                            $idUser = Session::getUser()->getId(); //id de l'user
+                            //tableau attendu en argument pour la fonction add
+                            $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
+            
+                            //recupere id du topic
+                            $idTopic= $topicManager->add($dataTopic);
+            
+                            //ajoute post
+                            $postManager = new PostManager();
         
-                        $postManager->add($dataPost);
+                            //tableau attendu en argument pour la fonction add
+                            $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
+            
+                            $postManager->add($dataPost);
+            
         
-    
-                        //si tout est bon
-                        Session::addFlash("success", "Topic well created");
-                        $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
-        
-                    } else {
-                        //ici message d'erreur 
-                        Session::addFlash("error", "This topic already exist");
-                        //redirection
-                        $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                            //si tout est bon
+                            Session::addFlash("success", "Topic well created");
+                            $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
+            
+                        } else {
+                            //ici message d'erreur 
+                            Session::addFlash("error", "This topic already exist");
+                            //redirection
+                            $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
+                        }
                     }
+
+
+
+                } else {
+                    Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit;
                 }
+
             } else {
-                $this->redirectTo("home", "index"); exit;
                 Session::addFlash("error", "Login to add a topic");
+                $this->redirectTo("home", "index"); exit;
             }
         }
     }
@@ -175,23 +196,30 @@ class ForumController extends AbstractController implements ControllerInterface{
     public function addPost($id){
         if(isset($_POST['submit'])){
             if(Session::getUser()){ //si l'utilisateur est toujours connecté
-                //d'abord on filtre
-                $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-                if($texte){
-                    $idUser = Session::getUser()->getId(); //id de l'user qui a créé le post
-                    //tableau attendu en argument pour la fonction add
-                    $data = ['texte' => $texte, 'topic_id' => $id, 'user_id'=>$idUser];
-                    $postManager = new PostManager();
-                    $postManager->add($data);
+                if(Session::getUser()->getBan()==0){
+                    //d'abord on filtre
+                    $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    
+                    if($texte){
+                        $idUser = Session::getUser()->getId(); //id de l'user qui a créé le post
+                        //tableau attendu en argument pour la fonction add
+                        $data = ['texte' => $texte, 'topic_id' => $id, 'user_id'=>$idUser];
+                        $postManager = new PostManager();
+                        $postManager->add($data);
+    
+                        //quand tout est bon
+                        Session::addFlash("success", "Post added");
+                        $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+                    }   
 
-                    //quand tout est bon
-                    Session::addFlash("success", "Post added");
-                    $this->redirectTo("forum", "listPostsByTopic", $id); exit;
-                }   
+                } else {
+                    Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit;
+                }
             } else {
-                $this->redirectTo("security", "index"); exit;  
                 Session::addFlash("error", "Login to add a post");          
+                $this->redirectTo("security", "index"); exit;  
             }
         }
     }
@@ -201,20 +229,28 @@ class ForumController extends AbstractController implements ControllerInterface{
         $this->restrictTo("ROLE_ADMIN"); 
         if(isset($_POST['submit'])){
             if(Session::getUser()) { // si l'utilisateur est toujours connectée
-                //on filtre
-                $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    
-                //si tout est bon on l'ajoute
-                if($name){
-                    $categoryManager = new CategoryManager();
-                    //tableau attendu en argument pour la fonction add
-                    $dataPost = ['name' => $name];
+
+                if(Session::getUser()->getBan()==0){
+                    //on filtre
+                    $name= filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         
-                    $categoryManager->add($dataPost);
-                }        
+                    //si tout est bon on l'ajoute
+                    if($name){
+                        $categoryManager = new CategoryManager();
+                        //tableau attendu en argument pour la fonction add
+                        $dataPost = ['name' => $name];
+            
+                        $categoryManager->add($dataPost);
+                    }        
+
+                } else {
+                    Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit;
+                }
+                
             } else {
-                $this->redirectTo("security", "index"); exit;  
                 Session::addFlash("error", "Login to add a category");    
+                $this->redirectTo("security", "index"); exit;  
             }
         }
 
@@ -257,8 +293,8 @@ class ForumController extends AbstractController implements ControllerInterface{
                     $categoryManager->update($data, $id);
                 }
             } else {
-                $this->redirectTo("security", "index"); exit;   
                 Session::addFlash("error", "Login to update a category");   
+                $this->redirectTo("security", "index"); exit;   
             }
 
         }
@@ -286,8 +322,8 @@ class ForumController extends AbstractController implements ControllerInterface{
                 $this->redirectTo("forum", "index"); exit;        
             }
         } else {
-            $this->redirectTo("forum", "index"); exit; 
             Session::addFlash("error", "Login to delete this post, or check if it still exists");
+            $this->redirectTo("forum", "index"); exit; 
         }
 
     }
@@ -306,8 +342,8 @@ class ForumController extends AbstractController implements ControllerInterface{
             Session::addFlash("success", "Topic deleted");
             $this->redirectTo("forum", "index"); exit;
         } else {
-            $this->redirectTo("forum", "index"); exit; 
             Session::addFlash("error", "Login to delete this post, or check if it still exists");
+            $this->redirectTo("forum", "index"); exit; 
         }
         
 
@@ -320,25 +356,31 @@ class ForumController extends AbstractController implements ControllerInterface{
         $topic= $topicManager->findOneById($id);
 
         if($topic && Session::getUser()){ //verifie que le topic existe et que l'utilisateur est connecté
+            if(Session::getUser()->getBan()==0){
+                //verifie: si l'auteur du topic existe encore et si tu es l'auteur, OU si tu es admin
+                if(($topic->getUser() && $topic->getUser() == Session::getUser()) || Session::isAdmin()){
+                    //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+                    $data =["verouillage"=>1];
             
-            //verifie: si l'auteur du topic existe encore et si tu es l'auteur, OU si tu es admin
-            if(($topic->getUser() && $topic->getUser() == Session::getUser()) || Session::isAdmin()){
-                //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
-                $data =["verouillage"=>1];
-        
-                //update attend les valeurs à modifier et l'id de l'endroit à modifier
-                $topicManager->update($data, $id);
-        
-                Session::addFlash("success", "Topic locked");
-                $this->redirectTo("forum", "listPostsByTopic", $id); exit; //redirige vers le lien qui montrent les post du topic
+                    //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                    $topicManager->update($data, $id);
+            
+                    Session::addFlash("success", "Topic locked");
+                    $this->redirectTo("forum", "listPostsByTopic", $id); exit; //redirige vers le lien qui montrent les post du topic
+    
+                } else {
+                    Session::addFlash("error", "You're not allowed do this action");
+                    $this->redirectTo("forum", "index"); exit;
+                }
 
             } else {
+                Session::addFlash("error", "You're banned, you can't do this for now");
                 $this->redirectTo("forum", "index"); exit;
-                Session::addFlash("error", "You're not allowed do this action");
             }
+            
         } else {
-            $this->redirectTo("forum", "index"); exit; 
             Session::addFlash("error", "Login to lock this topic");
+            $this->redirectTo("forum", "index"); exit; 
         }
     }
 
@@ -348,27 +390,33 @@ class ForumController extends AbstractController implements ControllerInterface{
         $topic = $topicManager->findOneById($id);
 
         if($topic && Session::getUser()){ //verifie si le topic existe et que l'utilisateur est connecté 
+            if(Session::getUser()->getBan()==0){
 
-            //verifie : si l'auteur du topic existe encore, et si tu es l'auteur OU si tu es admin
-            if(($topic->getUser() && $topic->getUser() == Session::getUser()) || Session::isAdmin()){
-
-                //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
-                $data =["verouillage"=>0];
-        
-                //update attend les valeurs à modifier et l'id de l'endroit à modifier
-                $topicManager->update($data, $id);
-        
-                Session::addFlash("success", "Topic unlocked");
-                $this->redirectTo("forum", "listPostsByTopic", $id); exit;
-
-                
+                //verifie : si l'auteur du topic existe encore, et si tu es l'auteur OU si tu es admin
+                if(($topic->getUser() && $topic->getUser() == Session::getUser()) || Session::isAdmin()){
+    
+                    //tableau associatif colonne à modifier et sa valeur, pour "SET verouillage=1" dans le manager
+                    $data =["verouillage"=>0];
+            
+                    //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                    $topicManager->update($data, $id);
+            
+                    Session::addFlash("success", "Topic unlocked");
+                    $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+    
+                    
+                } else {
+                    Session::addFlash("error", "You're not allowed to do this action");
+                    $this->redirectTo("forum", "index"); exit;
+                }
             } else {
+                Session::addFlash("error", "You're banned, you can't do this for now");
                 $this->redirectTo("forum", "index"); exit;
-                Session::addFlash("error", "You're not allowed to do this action");
             }
+
         } else {
-            $this->redirectTo("forum", "index"); exit;
             Session::addFlash("error", "Login to unlock this topic");
+            $this->redirectTo("forum", "index"); exit;
         }
 
     }
@@ -380,25 +428,31 @@ class ForumController extends AbstractController implements ControllerInterface{
         $posts = $postManager->findOneById($id);
 
         if($posts && Session::getUser()){ //si le post existe et si l'utilisateur est toujours connectée
-
-            //verifie : si l'auteur du post existe encore et si tu en es l'auteur OU si tu es admin
-            if(($posts->getUser() && $posts->getUser() == Session::getUser()) || Session::isAdmin()){
-
-                return [
-                    "view" => VIEW_DIR."update/modifPost.php",
-                    "meta_description" => "Update your posts",
-                    "data" => [
-                        "posts" => $posts
-                    ]
-                ];
+            if(Session::getUser()->getBan()==0){ //si l'utilisateur n'est pas banni
+                //verifie : si l'auteur du post existe encore et si tu en es l'auteur OU si tu es admin
+                if(($posts->getUser() && $posts->getUser() == Session::getUser()) || Session::isAdmin()){
+    
+                    return [
+                        "view" => VIEW_DIR."update/modifPost.php",
+                        "meta_description" => "Update your posts",
+                        "data" => [
+                            "posts" => $posts
+                        ]
+                    ];
+    
+                } else {
+                    Session::addFlash("error", "You're not allowed to do this");
+                    $this->redirectTo("forum", "index"); exit; 
+                }
 
             } else {
-                $this->redirectTo("forum", "index"); exit; 
-                Session::addFlash("error", "You're not allowed to do this");
+                Session::addFlash("error", "You're banned, you can't do this action for now");
+                $this->redirectTo("forum", "index"); exit;
             }
+
         } else {
-            $this->redirectTo("forum", "index"); exit; 
             Session::addFlash("error", "Login to update this post");
+            $this->redirectTo("forum", "index"); exit; 
         }
 
     }
@@ -410,32 +464,38 @@ class ForumController extends AbstractController implements ControllerInterface{
             $posts = $postManager->findOneById($id);
 
             if($posts && Session::getUser()){ //si le post existe et si l'utilisateur est toujours connectée
-                //verifie : si l'auteur du post existe encore et si tu en es l'auteur OU si tu es admin
-                if(($posts->getUser() && $posts->getUser() == Session::getUser()) || Session::isAdmin()){
-                    //on filtre
-                    $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-                    
-                    //si tout est bon on l'ajoute
-                    if($texte){
-                        //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
-                        $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
-                        //update attend les valeurs à modifier et l'id de l'endroit à modifier
-                        $postManager->update($data, $id);
+                if(Session::getUser()->getBan()==0){
+                    //verifie : si l'auteur du post existe encore et si tu en es l'auteur OU si tu es admin
+                    if(($posts->getUser() && $posts->getUser() == Session::getUser()) || Session::isAdmin()){
+                        //on filtre
+                        $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
                         
-                        Session::addFlash("success", "Post updated");
-                        //quand tout est fini on redirige vers la liste des post en fonction de l'id topic
-                        $idTopic= self::viewUpdatePost($id)["data"]["posts"]->getTopic()->getId(); 
-                        $this->redirectTo("forum", "listPostsByTopic", $idTopic); exit;
+                        //si tout est bon on l'ajoute
+                        if($texte){
+                            //tableau associatif colonne à modifier et sa valeur, pour "SET texte= '..' " dans le manager
+                            $data =["texte"=> "'".$texte."'"]; //rajoute des quotes car 'texte' attend un string dans la bdd
+                            //update attend les valeurs à modifier et l'id de l'endroit à modifier
+                            $postManager->update($data, $id);
+                            
+                            Session::addFlash("success", "Post updated");
+                            //quand tout est fini on redirige vers la liste des post en fonction de l'id topic
+                            $idTopic= self::viewUpdatePost($id)["data"]["posts"]->getTopic()->getId(); 
+                            $this->redirectTo("forum", "listPostsByTopic", $idTopic); exit;
+                        }
+    
+                    } else {
+                        Session::addFlash("error", "You're not allowed to do this");  
+                        $this->redirectTo("forum", "index"); exit;    
                     }
 
                 } else {
-                    $this->redirectTo("forum", "index"); exit;    
-                    Session::addFlash("error", "You're not allowed to do this");  
+                    Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit;
                 }
 
             } else {
-                $this->redirectTo("forum", "index"); exit;
                 Session::addFlash("error", "Login to update this post");
+                $this->redirectTo("forum", "index"); exit;
             }    
         }
     }
@@ -446,26 +506,32 @@ class ForumController extends AbstractController implements ControllerInterface{
         $topics = $topicManager->findOneById($id);
 
         if($topics && Session::getUser()){ //si le topic existe et si l'utilisateur est toujours connecté 
-
-            //si l'auteur du topic existe et si tu en es l'auteur OU si tu es admin
-            if(($topics->getUser() && $topics->getUser() == Session::getUser()) || Session::isAdmin()){
-                
-                return [
-                    "view" => VIEW_DIR."update/modifTopic.php",
-                    "meta_description" => "Update your topics",
-                    "data" => [
-                        "topics" => $topics
-                    ]
-                ];
+            if(Session::getUser()->getBan()==0){
+                //si l'auteur du topic existe et si tu en es l'auteur OU si tu es admin
+                if(($topics->getUser() && $topics->getUser() == Session::getUser()) || Session::isAdmin()){
+                    
+                    return [
+                        "view" => VIEW_DIR."update/modifTopic.php",
+                        "meta_description" => "Update your topics",
+                        "data" => [
+                            "topics" => $topics
+                        ]
+                    ];
+    
+                } else {
+                    Session::addFlash("error", "You're not allowed to do this action");
+                    $this->redirectTo("forum", "index"); exit;
+                }
 
             } else {
+                Session::addFlash("error", "You're banned, you can't do this for now");
                 $this->redirectTo("forum", "index"); exit;
-                Session::addFlash("error", "You're not allowed to do this action");
             }
+
         
         } else {
-            $this->redirectTo("forum", "index"); exit;
             Session::addFlash("error", "Login to update this topic");
+            $this->redirectTo("forum", "index"); exit;
         }
 
     }
@@ -477,30 +543,36 @@ class ForumController extends AbstractController implements ControllerInterface{
             $topics = $topicManager->findOneById($id);
 
             if($topics && Session::getUser()){ //si le topic existe et si l'utilisateur est toujours connecté 
-
-                //si l'auteur du topic existe et si tu en es l'auteur OU si tu es admin
-                if(($topics->getUser() && $topics->getUser() == Session::getUser()) || Session::isAdmin()){
-            
-                    //on filtre
-                    $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+                if(Session::getUser()->getBan()==0){
+                    //si l'auteur du topic existe et si tu en es l'auteur OU si tu es admin
+                    if(($topics->getUser() && $topics->getUser() == Session::getUser()) || Session::isAdmin()){
                 
-                    //si tout est bon on l'ajoute
-                    if($titre){            
-                        //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
-                        $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
-                        $topicManager->update($data, $id);
-                        //on redirige à la liste des topics en fonction de l'id de la categorie
-                        Session::addFlash("success", "Topic name updated");
-                        $idCat= self::viewUpdateTopic($id)["data"]["topics"]->getCategory()->getId();
-                        $this->redirectTo("forum", "listTopicsByCategory", $idCat); exit;
+                        //on filtre
+                        $titre= filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+                    
+                        //si tout est bon on l'ajoute
+                        if($titre){            
+                            //tableau associatif colonne à modifier et sa valeur, pour "SET titre='...' " dans le manager
+                            $data =["titre"=> "'".$titre."'"]; //rajoute des quotes car 'titre' attend un string dans la bdd
+                            $topicManager->update($data, $id);
+                            //on redirige à la liste des topics en fonction de l'id de la categorie
+                            Session::addFlash("success", "Topic name updated");
+                            $idCat= self::viewUpdateTopic($id)["data"]["topics"]->getCategory()->getId();
+                            $this->redirectTo("forum", "listTopicsByCategory", $idCat); exit;
+                        }
+                    } else {
+                        Session::addFlash("error", "You're not allowed to do this");  
+                        $this->redirectTo("forum", "index"); exit;   
                     }
+
                 } else {
-                    $this->redirectTo("forum", "index"); exit;   
-                    Session::addFlash("error", "You're not allowed to do this");  
+                    Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit;
                 }
+
             } else {
-                $this->redirectTo("home", "index"); exit
                 Session::addFlash("error", "Login to update this topic");
+                $this->redirectTo("home", "index"); exit;
             }
         }
     }

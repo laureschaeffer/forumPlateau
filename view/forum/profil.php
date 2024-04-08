@@ -3,7 +3,6 @@
 $userInfos= $result['data']['userInfos'];
 $postsUser=$result['data']['postsUser'];
 $topicsUser=$result['data']['topicsUser'];
-
 ?>
 
 <div id="user">
@@ -12,9 +11,29 @@ $topicsUser=$result['data']['topicsUser'];
     <div class="user-info">
         <p><?=$userInfos?></p>
         <p>Since <?=$userInfos->getDateInscription()->format('d-m-Y')?></p>
-        <!-- bouton pour update son profil sans changer de page, en lien avec la fonction javascript -->
-        <!-- <button class="modification">Change your profil</button> -->
     </div>
+    <?php
+    //si l'utilisateur est banni
+    if($userInfos->getBan()==1){ ?>
+       <div class="user-ban-ls">
+            <p>You haven't respect our rules, an admin banned you, which means you can't : </p>
+            <ul>
+                <li>Post anything</li>
+                <li>Unlock or lock your topics</li>
+                <li>Update your topics or posts</li>
+            </ul>
+            <p>But you can still : </p>
+            <ul>
+                <li>Change your profil</li>
+                <li>Delete your post</li>
+                <li>Delete your account</li>
+            </ul>
+            <p>We will inform you when the ban is lifted.</p>
+       </div> 
+       <?php
+    } 
+
+    ?>
     <h3>Your publications</h3>
     <div class="user-post">
         <?php 
@@ -26,8 +45,11 @@ $topicsUser=$result['data']['topicsUser'];
                 </div>
                 <div class="user-post-main">
                     <p><?=$post?></p>
-                    <p><a href="index.php?ctrl=forum&action=viewUpdatePost&id=<?=$post->getId()?>">Change your post</a></p>
-                    
+                    <?php if($userInfos->getBan()==0){ ?>
+                        <p><a href="index.php?ctrl=forum&action=viewUpdatePost&id=<?=$post->getId()?>">Change your post</a></p>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <hr>
                 <?php
@@ -52,11 +74,14 @@ $topicsUser=$result['data']['topicsUser'];
                 <div class="user-topic-main">
                     <p><a href="index.php?ctrl=forum&action=listPostsByTopic&id=<?=$topic->getId()?>"><?=$topic?></a></p>
                 </div>
-                <div class="user-topic-update">
-                    <p><a href="index.php?ctrl=forum&action=viewUpdateTopic&id=<?=$topic->getId()?>"><i class="fa-solid fa-pen"></i> Modify</a></p>
-                    <?=$lockStatut?>
-                </div>
-            <?php
+                <?php if($userInfos->getBan()==0){ ?>
+                    <div class="user-topic-update">
+                        <p><a href="index.php?ctrl=forum&action=viewUpdateTopic&id=<?=$topic->getId()?>"><i class="fa-solid fa-pen"></i> Modify</a></p>
+                        <?=$lockStatut?>
+                    </div>
+                <?php
+
+                }
             }
         } else { ?>
             <p>No topics created yet</p>

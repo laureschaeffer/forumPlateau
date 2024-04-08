@@ -145,7 +145,7 @@ class SecurityController extends AbstractController{
         $data =["role" => "'ROLE_ADMIN'"]; 
         $userManager->update($data, $id);
 
-        Session::addFlash("sucess", "This user is now an admin");
+        Session::addFlash("success", "This user is now an admin");
         $this->redirectTo("forum", "findOneUser", $id); exit;
     }
 
@@ -158,7 +158,7 @@ class SecurityController extends AbstractController{
         $data = ["ban" => 1];
         $userManager->update($data, $id);
 
-        Session::addFlash("sucess", "This user is now banned");
+        Session::addFlash("success", "This user is now banned");
         $this->redirectTo("forum", "findOneUser", $id); exit;
 
     }
@@ -172,7 +172,7 @@ class SecurityController extends AbstractController{
         $data = ["ban" => 0];
         $userManager->update($data, $id);
 
-        Session::addFlash("sucess", "This user is not banned anymore");
+        Session::addFlash("success", "This user is not banned anymore");
         $this->redirectTo("forum", "findOneUser", $id); exit;
 
     }
@@ -190,8 +190,8 @@ class SecurityController extends AbstractController{
             $this->redirectTo("home", "index"); exit;
 
         } else {
-            $this->redirectTo("home", "index"); exit;
             Session::addFlash("error", "You're not allowed to do this");
+            $this->redirectTo("home", "index"); exit;
         }
     }
 
