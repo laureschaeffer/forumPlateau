@@ -31,8 +31,10 @@ class SecurityController extends AbstractController{
             
             //honey pot field
             $honeypot= filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_SPECIAL_CHARS);
+
+            // var_dump($honeypot); die;
             //si cet input est rempli, c'est un robot qui l'a rempli et donc il faut tout stopper et le rediriger, pour contrer l'attaque par force brute
-            if( ! empty( $honeypot ) ){
+            if( !isset($_POST["firstname"])   ){
 
                 // si tout est bon
                 if ($email && $pseudo && $pass1 && $pass2){
@@ -79,7 +81,7 @@ class SecurityController extends AbstractController{
                 } 
 
             } else { //si l'input honeypot est rempli
-                $this->redirectTo("home", "index"); die;
+                $this->redirectTo("security", "viewRegister"); exit;
             }
         }
 
@@ -110,7 +112,7 @@ class SecurityController extends AbstractController{
             //honey pot field
             $honeypot= filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_SPECIAL_CHARS);
             //si cet input est rempli, c'est un robot qui l'a rempli et donc il faut tout stopper et le rediriger, pour contrer l'attaque par force brute
-            if( ! empty( $honeypot ) ){
+            if( !empty( $honeypot ) ){
 
                 if ($email && $password){
                     //cherche l'utilisateur
