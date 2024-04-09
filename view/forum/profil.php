@@ -92,8 +92,10 @@ $topicsUser=$result['data']['topicsUser'];
     <div class="line-break">
         <hr class="line">
     </div>
-    <h4>Delete your account</h4>
-    <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
+    <div class="delete-acount">
+        <h4>Delete your account</h4>
+        <p><a href="index.php?ctrl=security&action=deleteUser&id=<?=$userInfos->getId()?>">Delete</a></p>
+    </div>
 
 
 </div>

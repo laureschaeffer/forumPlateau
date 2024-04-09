@@ -5,6 +5,9 @@
 <!-- lien vers le controller  -->
 <div id="register">
     <form action="index.php?ctrl=security&action=register" method="post">
+        <!-- Create fields for the honeypot -->
+		<input name="firstname" type="text" id="firstname" class="hide-robot">
+		<!-- honeypot fields end -->
         <label for="email">Email</label>
         <input type="email" name="email" id="email" required><br>
 

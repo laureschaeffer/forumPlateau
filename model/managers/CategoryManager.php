@@ -16,16 +16,25 @@ class CategoryManager extends Manager{
 
     //calcule le nb de topics d'une categorie
     public function listCategories(){
-        $sql = "SELECT COUNT(t.id_topic) as nbTopic, c.*
-        FROM topic t
-        INNER JOIN category c on t.category_id = c.id_category
-        GROUP BY t.category_id
-        ORDER BY c.name" ;
+        $sql = "SELECT   c.name, c.id_category , COUNT(t.id_topic) AS nbTopic
+        FROM category c
+        LEFT JOIN topic t ON c.id_category = t.category_id
+        GROUP BY c.name, c.id_category" ;
 
         return $this->getMultipleResults(
             DAO::select($sql), 
             $this->className
         );
+    }
+
+    //cherche le titre d'une categorie, pour le formulaire d'ajout
+    public function findCategoryTitle($name){
+        $sql = "SELECT * FROM category c WHERE c.name = :name";
+
+        return $this->getOneOrNullResult(
+            DAO::select($sql, ['name' => $name], false), $this->className
+        );
+
     }
 
 }

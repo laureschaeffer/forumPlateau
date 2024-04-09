@@ -34,35 +34,44 @@ class ForumController extends AbstractController implements ControllerInterface{
         ];
     }
 
+    
+
+
 
     //liste des topics en fonction d'une catégorie
     public function listTopicsByCategory($id) {
 
-        if(Session::getUser()->getBan()==0){ //si l'user n'est pas ban
+        if(Session::getUser()){
 
-            $topicManager = new TopicManager();
-            $categoryManager = new CategoryManager();
-            $category = $categoryManager->findOneById($id);
-            $topics = $topicManager->findTopicsByCategory($id);
+            if(Session::getUser()->getBan()==0){ //si l'user n'est pas ban
     
-            //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
-            if($category){
-                return [
-                    "view" => VIEW_DIR."forum/listTopics.php",
-                    "meta_description" => "List of topics by category : ".$category,
-                    "data" => [
-                        "category" => $category,
-                        "topics" => $topics
-                    ]
-                ];
+                $topicManager = new TopicManager();
+                $categoryManager = new CategoryManager();
+                $category = $categoryManager->findOneById($id);
+                $topics = $topicManager->findTopicsByCategory($id);
+        
+                //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
+                if($category){
+                    return [
+                        "view" => VIEW_DIR."forum/listTopics.php",
+                        "meta_description" => "List of topics by category : ".$category,
+                        "data" => [
+                            "category" => $category,
+                            "topics" => $topics
+                        ]
+                    ];
+                } else {
+                    Session::addFlash("error", "This category doesn't exist");
+                    $this->redirectTo("forum", "index"); exit; 
+                    
+                }
             } else {
-                Session::addFlash("error", "This category doesn't exist");
-                $this->redirectTo("forum", "index"); exit; 
-                
+                Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit; 
             }
         } else {
-            Session::addFlash("error", "You're banned, you can't do this for now");
-                $this->redirectTo("forum", "index"); exit; 
+            Session::addFlash("error", "Login to see this");
+            $this->redirectTo("forum", "index"); exit; 
         }
 
     }
@@ -78,6 +87,12 @@ class ForumController extends AbstractController implements ControllerInterface{
         $postManager = new PostManager();
         $posts = $postManager->findPostsByTopic($id);
 
+        if(Session::getUser()){
+
+        } else {
+            Session::addFlash("error", "Login to see this");
+            $this->redirectTo("forum", "index"); exit; 
+        }
         //pour ne pas avoir d'erreur si un user tape dans la barre de recherche "id=100"
         if($topics){
             if(Session::getUser()->getBan()==0){
@@ -107,31 +122,37 @@ class ForumController extends AbstractController implements ControllerInterface{
         //infos generales
         $userManager = new UserManager();
         $userInfos = $userManager->findOneById($id);
-
+        // var_dump($userInfos); die;
         //posts ou user_id = ...
         $postManager = new PostManager();
         $postsUser = $postManager->findPostsByUser($id);
 
-        //pour ne pas avoir d'erreur si l'user tape dans l'url id=100
-        if($userInfos){
-            if(Session::getUser()->getBan()==0){ //si l'utilisateur n'est pas ban
-
-                return [
-                    "view" => VIEW_DIR."forum/userInfo.php",
-                    "meta_description" => "User informations",
-                    "data" => [
-                        "userInfos" => $userInfos,
-                        "postsUser" => $postsUser
-                    ]
-                ];
-
+        if(Session::getUser()){
+            //pour ne pas avoir d'erreur si l'user tape dans l'url id=100
+            if($userInfos){
+                if(Session::getUser()->getBan()==0){ //si l'utilisateur n'est pas ban
+    
+                    return [
+                        "view" => VIEW_DIR."forum/userInfo.php",
+                        "meta_description" => "User informations",
+                        "data" => [
+                            "userInfos" => $userInfos,
+                            "postsUser" => $postsUser
+                        ]
+                    ];
+    
+                } else {
+                    Session::addFlash("error", "You're banned, you can't do this for now");
+                    $this->redirectTo("forum", "index"); exit; 
+                }
             } else {
-                Session::addFlash("error", "You're banned, you can't do this for now");
-                $this->redirectTo("forum", "index"); exit; 
+                Session::addFlash("error", "This user doesn't exist");
+                $this->redirectTo("forum", "index"); exit;
             }
+
         } else {
-            Session::addFlash("error", "This user doesn't exist");
-            $this->redirectTo("forum", "index"); exit;
+            Session::addFlash("error", "Login to see");
+            $this->redirectTo("home", "index"); exit; 
         }
 
     }
@@ -155,37 +176,26 @@ class ForumController extends AbstractController implements ControllerInterface{
                         $topicManager = new TopicManager();
                         $titreTopicBDD = $topicManager->findTopicTitle($titre);
             
-                        //renvoie true si le titre existe
-                        if(!$titreTopicBDD){
-                            $idUser = Session::getUser()->getId(); //id de l'user
-                            //tableau attendu en argument pour la fonction add
-                            $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
-            
-                            //recupere id du topic
-                            $idTopic= $topicManager->add($dataTopic);
-            
-                            //ajoute post
-                            $postManager = new PostManager();
+                        $idUser = Session::getUser()->getId(); //id de l'user
+                        //tableau attendu en argument pour la fonction add
+                        $dataTopic = ['titre' => $titre, 'category_id' => $id, 'user_id'=>$idUser];
         
-                            //tableau attendu en argument pour la fonction add
-                            $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
-            
-                            $postManager->add($dataPost);
-            
+                        //recupere id du topic
+                        $idTopic= $topicManager->add($dataTopic);
         
-                            //si tout est bon
-                            Session::addFlash("success", "Topic well created");
-                            $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
-            
-                        } else {
-                            //ici message d'erreur 
-                            Session::addFlash("error", "This topic already exist");
-                            //redirection
-                            $this->redirectTo("forum", "listTopicsByCategory", $id); exit;
-                        }
+                        //ajoute post
+                        $postManager = new PostManager();
+    
+                        //tableau attendu en argument pour la fonction add
+                        $dataPost = ['texte' => $texte, 'user_id' => $idUser, 'topic_id' =>$idTopic];
+        
+                        $postManager->add($dataPost);
+        
+    
+                        //si tout est bon
+                        Session::addFlash("success", "Topic well created");
+                        $this->redirectTo("forum", "findPostsByTopic", $idTopic); exit;
                     }
-
-
 
                 } else {
                     Session::addFlash("error", "You're banned, you can't do this for now");
@@ -209,15 +219,20 @@ class ForumController extends AbstractController implements ControllerInterface{
                     $texte= filter_input(INPUT_POST, "texte", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     
                     if($texte){
+                        $postManager = new PostManager();
+                        
+                        // verifie que le titre de la categorie n'existe pas déjà 
+                        $titreCatBDD = $categoryManager->findCategoryTitle($texte);
+
                         $idUser = Session::getUser()->getId(); //id de l'user qui a créé le post
                         //tableau attendu en argument pour la fonction add
                         $data = ['texte' => $texte, 'topic_id' => $id, 'user_id'=>$idUser];
-                        $postManager = new PostManager();
                         $postManager->add($data);
-    
+        
                         //quand tout est bon
                         Session::addFlash("success", "Post added");
                         $this->redirectTo("forum", "listPostsByTopic", $id); exit;
+
                     }   
 
                 } else {
@@ -244,10 +259,23 @@ class ForumController extends AbstractController implements ControllerInterface{
                     //si tout est bon on l'ajoute
                     if($name){
                         $categoryManager = new CategoryManager();
-                        //tableau attendu en argument pour la fonction add
-                        $dataPost = ['name' => $name];
-            
-                        $categoryManager->add($dataPost);
+
+                        // verifie que le titre de la categorie n'existe pas déjà 
+                        $titreCatBDD = $categoryManager->findCategoryTitle($texte);
+
+                        if(!$titreCatBDD){
+                            //tableau attendu en argument pour la fonction add
+                            $dataPost = ['name' => $name];
+                
+                            $categoryManager->add($dataPost);
+    
+                            $this->redirectTo("forum", "listCategories"); 
+
+                        } else {
+                            Session::addFlash("error", "This category name already exists");
+                            $this->redirectTo("forum", "index"); exit ;
+                        }
+
                     }        
 
                 } else {

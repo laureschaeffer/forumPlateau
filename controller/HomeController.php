@@ -19,15 +19,16 @@ class HomeController extends AbstractController implements ControllerInterface {
 
         $topTopics = $topicManager->findTop3Topics(); //3 topics qui contiennent le plus de posts
         $topUsers = $userManager->findTop3Users(); //3 users les plus actifs 
-        
+       
 
         return [
             "view" => VIEW_DIR."home.php",
             "meta_description" => "Page d'accueil du forum",
             "data" => [
                 "topTopics" => $topTopics,
-                "topUsers" => $topUsers
-            ]
+                "topUsers" => $topUsers,
+               
+            ] 
         ];
     }
         

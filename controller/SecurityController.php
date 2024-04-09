@@ -28,50 +28,59 @@ class SecurityController extends AbstractController{
             $pseudo = filter_input(INPUT_POST, "pseudo", FILTER_SANITIZE_SPECIAL_CHARS);
             $pass1= filter_input(INPUT_POST, "pass1", FILTER_SANITIZE_SPECIAL_CHARS);
             $pass2= filter_input(INPUT_POST, "pass2", FILTER_SANITIZE_SPECIAL_CHARS);
+            
+            //honey pot field
+            $honeypot= filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_SPECIAL_CHARS);
+            //si cet input est rempli, c'est un robot qui l'a rempli et donc il faut tout stopper et le rediriger, pour contrer l'attaque par force brute
+            if( ! empty( $honeypot ) ){
 
-            // si tout est bon
-            if ($email && $pseudo && $pass1 && $pass2){
-
-                
-                //verifie que ni le pseudo ni le mail n'existe déjà dans la bdd ; renvoie un objet
-                $userMail = $userManager->findOneByEmail($email);
-                $userPseudo = $userManager->findOneByUser($pseudo);
-                
-                //renvoie true si existe
-                if(!$userMail && !$userPseudo){
-                    // Valide la qualité du mdp
-                    $uppercase = preg_match('@[A-Z]@', $pass1); //une majuscule
-                    $lowercase = preg_match('@[a-z]@', $pass1); //une minuscule
-                    $number    = preg_match('@[0-9]@', $pass1); //un nombre
-                    $specialChars = preg_match('@[^\w]@', $pass1); //un caractere special
-
-                    //si ces conditions ne sont pas remplies
-                    if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($pass1) < 11) {
-                        Session::addFlash("error", "Password should be at least 12 characters in length and should include at least one upper case letter, one number, and one special character");
-                        $this->redirectTo("security", "viewRegister"); exit; 
-                    } else { //si le mdp valide on verifie que les 2 mdp correspondent
-                        if($pass1 == $pass2){
-                            //tableau attendu en argument pour la fonction add
-                            $data = ['email' => $email, 'pseudo' => $pseudo, 'motdePasse' => password_hash($pass1, PASSWORD_DEFAULT)];
-                            $userManager->add($data);
-
-                            //ensuite cherche l'utilisateur créé dans la bdd
-                            $user = $userManager->findOneByEmail($email);
-                            $_SESSION["user"] = $user; //stocke tout l'utilisateur en session
-                            $this->redirectTo("forum", "index"); exit;
-                        } else {
-                            Session::addFlash("error", "Passwords don't match");
-                            $this->redirectTo("security", "viewRegister"); exit ;
+                // si tout est bon
+                if ($email && $pseudo && $pass1 && $pass2){
+    
+                    
+                    //verifie que ni le pseudo ni le mail n'existe déjà dans la bdd ; renvoie un objet
+                    $userMail = $userManager->findOneByEmail($email);
+                    $userPseudo = $userManager->findOneByUser($pseudo);
+                    
+                    //renvoie true si existe
+                    if(!$userMail && !$userPseudo){
+                        // Valide la qualité du mdp
+                        $uppercase = preg_match('@[A-Z]@', $pass1); //une majuscule
+                        $lowercase = preg_match('@[a-z]@', $pass1); //une minuscule
+                        $number    = preg_match('@[0-9]@', $pass1); //un nombre
+                        $specialChars = preg_match('@[^\w]@', $pass1); //un caractere special
+    
+                        //si ces conditions ne sont pas remplies
+                        if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($pass1) < 11) {
+                            Session::addFlash("error", "Password should be at least 12 characters in length and should include at least one upper case letter, one number, and one special character");
+                            $this->redirectTo("security", "viewRegister"); exit; 
+                        } else { //si le mdp valide on verifie que les 2 mdp correspondent
+                            if($pass1 == $pass2){
+                                //tableau attendu en argument pour la fonction add
+                                $data = ['email' => $email, 'pseudo' => $pseudo, 'motdePasse' => password_hash($pass1, PASSWORD_DEFAULT)];
+                                $userManager->add($data);
+    
+                                //ensuite cherche l'utilisateur créé dans la bdd
+                                $user = $userManager->findOneByEmail($email);
+                                $_SESSION["user"] = $user; //stocke tout l'utilisateur en session
+                                $this->redirectTo("forum", "index"); exit;
+                            } else {
+                                Session::addFlash("error", "Passwords don't match");
+                                $this->redirectTo("security", "viewRegister"); exit ;
+                            }
                         }
+                        //si le mail ou le pseudo existe déjà en bdd
+                    } else {
+                        //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
+                        Session::addFlash("error", "Nickname or email already existing");
+                        $this->redirectTo("security", "viewRegister"); exit; 
                     }
-                    //si le mail ou le pseudo existe déjà en bdd
-                } else {
-                    //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
-                    Session::addFlash("error", "Nickname or email already existing");
-                    $this->redirectTo("security", "viewRegister"); exit; 
-                }
-                        
-            } 
+                            
+                } 
+
+            } else { //si l'input honeypot est rempli
+                $this->redirectTo("home", "index"); die;
+            }
         }
 
         return [
@@ -98,29 +107,36 @@ class SecurityController extends AbstractController{
             $email= filter_input(INPUT_POST, "email", FILTER_SANITIZE_SPECIAL_CHARS, FILTER_VALIDATE_EMAIL);
             $password= filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
 
-            if ($email && $password){
-                //cherche l'utilisateur
+            //honey pot field
+            $honeypot= filter_input(INPUT_POST, "firstname", FILTER_SANITIZE_SPECIAL_CHARS);
+            //si cet input est rempli, c'est un robot qui l'a rempli et donc il faut tout stopper et le rediriger, pour contrer l'attaque par force brute
+            if( ! empty( $honeypot ) ){
 
-                //fonction qui cherche et verifie que l'utilisateur existe
-                $user = $userManager->findOneByEmail($email);
-
-                //si l'utilisateur existe
-                if($user != NULL){
-                    $hash = $user->getMotDePasse();
-                    //si les empreintes numeriques correspondent
-                    if(password_verify($password, $hash)){
-                        $_SESSION["user"] = $user; //stocke tout l'utilisateur en session
-                    } else{
+                if ($email && $password){
+                    //cherche l'utilisateur
+    
+                    //fonction qui cherche et verifie que l'utilisateur existe
+                    $user = $userManager->findOneByEmail($email);
+    
+                    //si l'utilisateur existe
+                    if($user != NULL){
+                        $hash = $user->getMotDePasse();
+                        //si les empreintes numeriques correspondent
+                        if(password_verify($password, $hash)){
+                            $_SESSION["user"] = $user; //stocke tout l'utilisateur en session
+                        } else{
+                            //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
+                            Session::addFlash("error", "Invalid credentials");
+                            $this->redirectTo("security", "viewLogin"); exit;
+                        }
+                    } else {
                         //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
                         Session::addFlash("error", "Invalid credentials");
                         $this->redirectTo("security", "viewLogin"); exit;
                     }
-                } else {
-                    //ne pas etre trop précis pour ne pas donner trop d'informations à des utilisateurs malveillants
-                    Session::addFlash("error", "Invalid credentials");
-                    $this->redirectTo("security", "viewLogin"); exit;
                 }
-
+            } else {//si l'input honeypot est rempli
+                $this->redirectTo("home", "index"); die;
             }
 
         }
@@ -191,7 +207,7 @@ class SecurityController extends AbstractController{
 
         } else {
             Session::addFlash("error", "You're not allowed to do this");
-            $this->redirectTo("home", "index"); exit;
+            $this->redirectTo("home", "profil"); exit;
         }
     }
 

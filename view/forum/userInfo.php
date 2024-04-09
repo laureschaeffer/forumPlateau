@@ -30,7 +30,6 @@ if(App\Session::getUser()){ //si l'utilisateur est connecté ?>
         <?php 
         if($postsUser){
             ?>
-            <p>Has posted <?=$userInfos->getNbPost()?> times</p>
             <?php
             foreach($postsUser as $post){ ?>
                 <div class="user-post">

@@ -2,6 +2,9 @@
 
 <!-- lien vers le controller  -->
     <form action="index.php?ctrl=security&action=login" method="post">
+        <!-- Create fields for the honeypot -->
+		<input name="firstname" type="text" id="firstname" class="hide-robot">
+		<!-- honeypot fields end -->
         <label for="email">Email</label>
         <input type="email" name="email" id="email"><br>
 
