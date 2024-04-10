@@ -2,6 +2,15 @@
 
 Application d'un forum qui contient des catégories, des topics, plusieurs posts et utilisateurs. Possibilité de les vérouiller, modifier, supprimer, en fonction des autorisations (auteur ou admin)
 
+## Rendu
+![home](public/img/home-screen.png)
+![home](public/img/topTopic-screen.png)
+
+**Version mobile**
+
+![home](public/img/cat-screen-m.png)
+
+
 ## Preparation :
 - MCD sur looping
 - Maquettage sur figma en mockup
